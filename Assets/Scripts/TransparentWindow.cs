@@ -1,20 +1,12 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class TransparentWindow : MonoBehaviour
 {
-    private struct MARGINS
-    {
-        public int cxLeftWidth;
-        public int cxRightWidth;
-        public int cyTopWidth;
-        public int cyBottomWidth;
-    }
-
-    [DllImport("Dwmapi.dll")]
-    private static extern uint DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS margins);
-
     [DllImport("user32.dll")]
     private static extern IntPtr GetActiveWindow();
 
@@ -22,22 +14,78 @@ public class TransparentWindow : MonoBehaviour
     private static extern int SetWindowLong(IntPtr hWnd, int nIndex, uint dwNewLong);
 
     [DllImport("user32.dll", SetLastError = true)]
-    private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy,
-        uint uFlags);
+    static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
-    private const int GWL_EXSTYLE = -20;
-    private const uint WS_EX_LAYERED = 0x0008000;
-    private const uint WS_EX_TRANSPARENT = 0x0000020;
-    private static readonly IntPtr HWND_TOPMOST = new(-1);
+    [DllImport("user32.dll")]
+    static extern int SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
+
+    private struct MARGINS
+    {
+        public int cxLeftWidth;
+        public int cxRightWidth;
+        public int cyTopHeight;
+        public int cyBottomHeight;
+    }
+
+    [DllImport("Dwmapi.dll")]
+    private static extern uint DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS margins);
+
+    const int GWL_EXSTYLE = -20;
+
+    const uint WS_EX_LAYERED = 0x00080000;
+    const uint WS_EX_TRANSPARENT = 0x00000020;
+    const uint WS_EX_NOACTIVATE = 0x08000000;
+
+    static readonly IntPtr HWND_TOPMOST = new(1);
+
+    const uint LWA_COLORKEY = 0x00000001;
+
+    private IntPtr hWnd;
+    private Camera _camera;
+
+    // ReSharper disable once UnusedMember.Local
+    private void NotEditor()
+    {
+        hWnd = GetActiveWindow();
+
+        var margins = new MARGINS { cxLeftWidth = -1 };
+        DwmExtendFrameIntoClientArea(hWnd, ref margins);
+
+        SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE);
+
+        SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, 0);
+    }
 
     private void Start()
     {
+        _camera = Camera.main;
 #if !UNITY_EDITOR
-        var hWnd = GetActiveWindow();
-        var margins = new MARGINS { cxLeftWidth = -1 };
-        DwmExtendFrameIntoClientArea(hWnd, ref margins);
-        SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT);
-        SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, 0);
+        NotEditor();
 #endif
+
+        Application.runInBackground = true;
     }
+/*
+    private List<RaycastResult> _rl;
+
+    private void Update()
+    {
+        SetClickthrough(
+            Physics2D.OverlapPoint(_camera.ScreenToWorldPoint(Mouse.current.position.ReadValue())) is null);
+        EventSystem.current.RaycastAll(
+            new PointerEventData(EventSystem.current) { position = Mouse.current.position.ReadValue() }, _rl);
+        SetClickthrough(_rl.Count > 0);
+    }
+
+    private void SetClickthrough(bool clickthrough)
+    {
+        if (clickthrough)
+        {
+            SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_NOACTIVATE | WS_EX_TRANSPARENT);
+        }
+        else
+        {
+            SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_NOACTIVATE);
+        }
+    }*/
 }
