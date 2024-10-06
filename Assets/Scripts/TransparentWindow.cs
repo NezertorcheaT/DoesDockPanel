@@ -14,10 +14,8 @@ public class TransparentWindow : MonoBehaviour
     private static extern int SetWindowLong(IntPtr hWnd, int nIndex, uint dwNewLong);
 
     [DllImport("user32.dll", SetLastError = true)]
-    static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
-
-    [DllImport("user32.dll")]
-    static extern int SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
+    private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy,
+        uint uFlags);
 
     private struct MARGINS
     {
@@ -31,17 +29,11 @@ public class TransparentWindow : MonoBehaviour
     private static extern uint DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS margins);
 
     const int GWL_EXSTYLE = -20;
-
     const uint WS_EX_LAYERED = 0x00080000;
     const uint WS_EX_TRANSPARENT = 0x00000020;
     const uint WS_EX_NOACTIVATE = 0x08000000;
-
     static readonly IntPtr HWND_TOPMOST = new(1);
-
-    const uint LWA_COLORKEY = 0x00000001;
-
     private IntPtr hWnd;
-    private Camera _camera;
 
     // ReSharper disable once UnusedMember.Local
     private void NotEditor()
@@ -52,33 +44,33 @@ public class TransparentWindow : MonoBehaviour
         DwmExtendFrameIntoClientArea(hWnd, ref margins);
 
         SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE);
+        SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_NOACTIVATE);
 
         SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, 0);
     }
 
     private void Start()
     {
-        _camera = Camera.main;
+        _rl = new List<RaycastResult>();
 #if !UNITY_EDITOR
         NotEditor();
 #endif
 
         Application.runInBackground = true;
     }
-/*
+
     private List<RaycastResult> _rl;
 
     private void Update()
     {
-        SetClickthrough(
-            Physics2D.OverlapPoint(_camera.ScreenToWorldPoint(Mouse.current.position.ReadValue())) is null);
         EventSystem.current.RaycastAll(
             new PointerEventData(EventSystem.current) { position = Mouse.current.position.ReadValue() }, _rl);
-        SetClickthrough(_rl.Count > 0);
+        SetClickthrough(_rl.Count <= 0);
     }
 
     private void SetClickthrough(bool clickthrough)
     {
+#if !UNITY_EDITOR
         if (clickthrough)
         {
             SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_NOACTIVATE | WS_EX_TRANSPARENT);
@@ -87,5 +79,6 @@ public class TransparentWindow : MonoBehaviour
         {
             SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_NOACTIVATE);
         }
-    }*/
+#endif
+    }
 }
