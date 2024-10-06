@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using Graphics = System.Drawing.Graphics;
 
 public static class FileThumbnail
 {
@@ -20,24 +17,44 @@ public static class FileThumbnail
 
         if (iconHandle == IntPtr.Zero)
             throw new Exception("I dono");
+
+        // Create a temporary RenderTexture to draw the icon onto
+        var renderTexture = new RenderTexture(iconSize, iconSize, 0);
+        Graphics.SetRenderTarget(renderTexture);
+        GL.Clear(true, true, Color.clear);
+
+        // Draw the icon using a GUI.DrawTexture call
+        GUI.DrawTexture(new Rect(0, 0, iconSize, iconSize), GetIconTexture(iconHandle));
+        Graphics.SetRenderTarget(null);
+
+        // Read the contents of the RenderTexture into a Texture2D
         var texture = new Texture2D(iconSize, iconSize, TextureFormat.ARGB32, false);
+        texture.ReadPixels(new Rect(0, 0, iconSize, iconSize), 0, 0);
+        texture.Apply();
 
-        using (var bmp = new Bitmap(iconSize, iconSize))
-        {
-            using (var g = Graphics.FromImage(bmp))
-            {
-                var icon = Icon.FromHandle(iconHandle);
-                g.DrawIcon(icon, new Rectangle(0, 0, iconSize, iconSize));
-            }
-
-            using (var ms = new MemoryStream())
-            {
-                bmp.Save(ms, ImageFormat.Png);
-                texture.LoadImage(ms.ToArray());
-            }
-        }
-
+        // Release resources
+        RenderTexture.ReleaseTemporary(renderTexture);
         DestroyIcon(iconHandle);
+
         return texture;
+    }
+
+    // Helper function to convert an icon handle to a Texture2D
+    private static Texture2D GetIconTexture(IntPtr iconHandle)
+    {
+        // Create a temporary MemoryStream to store the icon data
+        using (var ms = new MemoryStream())
+        {
+            // Get the icon bitmap from the handle
+            var icon = System.Drawing.Icon.FromHandle(iconHandle);
+
+            // Save the icon to the MemoryStream as a PNG
+            icon.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+            // Create a Texture2D from the MemoryStream data
+            var texture = new Texture2D(1, 1);
+            texture.LoadImage(ms.ToArray());
+            return texture;
+        }
     }
 }
