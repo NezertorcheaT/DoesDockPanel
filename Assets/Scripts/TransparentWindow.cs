@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 
-public class TransparentWindow : MonoBehaviour
+public class TransparentWindow : MonoBehaviour, IEntriable
 {
     [DllImport("user32.dll")]
     private static extern IntPtr GetActiveWindow();
@@ -48,8 +47,8 @@ public class TransparentWindow : MonoBehaviour
 
         SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, 0);
     }
-
-    private void Start()
+    
+    void IEntriable.Begin()
     {
         _rl = new List<RaycastResult>();
 #if !UNITY_EDITOR
@@ -63,9 +62,11 @@ public class TransparentWindow : MonoBehaviour
 
     private void Update()
     {
+#if !UNITY_EDITOR
         EventSystem.current.RaycastAll(
             new PointerEventData(EventSystem.current) { position = Mouse.current.position.ReadValue() }, _rl);
         SetClickthrough(_rl.Count <= 0);
+#endif
     }
 
     private void SetClickthrough(bool clickthrough)
