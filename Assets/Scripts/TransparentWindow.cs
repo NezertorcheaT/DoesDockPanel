@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class TransparentWindow : MonoBehaviour, IEntriable
 {
@@ -41,20 +42,16 @@ public class TransparentWindow : MonoBehaviour, IEntriable
 
         var margins = new MARGINS { cxLeftWidth = -1 };
         DwmExtendFrameIntoClientArea(hWnd, ref margins);
-
-        SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE);
         SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_NOACTIVATE);
-
         SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, 0);
     }
-    
+
     void IEntriable.Begin()
     {
         _rl = new List<RaycastResult>();
 #if !UNITY_EDITOR
         NotEditor();
 #endif
-
         Application.runInBackground = true;
     }
 
@@ -65,21 +62,11 @@ public class TransparentWindow : MonoBehaviour, IEntriable
 #if !UNITY_EDITOR
         EventSystem.current.RaycastAll(
             new PointerEventData(EventSystem.current) { position = Mouse.current.position.ReadValue() }, _rl);
-        SetClickthrough(_rl.Count <= 0);
-#endif
-    }
-
-    private void SetClickthrough(bool clickthrough)
-    {
-#if !UNITY_EDITOR
-        if (clickthrough)
-        {
-            SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_NOACTIVATE | WS_EX_TRANSPARENT);
-        }
-        else
-        {
-            SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_NOACTIVATE);
-        }
+        SetWindowLong(hWnd, GWL_EXSTYLE,
+            _rl.Count <= 0
+                ? WS_EX_LAYERED | WS_EX_NOACTIVATE | WS_EX_TRANSPARENT
+                : WS_EX_LAYERED | WS_EX_NOACTIVATE
+        );
 #endif
     }
 }
