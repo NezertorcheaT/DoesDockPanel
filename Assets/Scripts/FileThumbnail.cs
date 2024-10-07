@@ -14,30 +14,18 @@ public static class FileThumbnail
     [DllImport("User32.dll", CharSet = CharSet.Auto)]
     private static extern bool DestroyIcon(IntPtr hIcon);
 
-    public static Texture2D GetThumbnail(string filePath, int iconSize = 256)
+    public static Texture2D GetThumbnail(string filePath, int iconSize = 512)
     {
-        var iconHandle = ExtractIcon(IntPtr.Zero, filePath, 0);
-
-        if (iconHandle == IntPtr.Zero)
-            throw new Exception("I dono");
         var texture = new Texture2D(iconSize, iconSize, TextureFormat.ARGB32, false);
 
-        using (var bmp = new Bitmap(iconSize, iconSize))
+        using (var ms = new MemoryStream())
         {
-            using (var g = Graphics.FromImage(bmp))
-            {
-                var icon = Icon.FromHandle(iconHandle);
-                g.DrawIcon(icon, new Rectangle(0, 0, iconSize, iconSize));
-            }
-
-            using (var ms = new MemoryStream())
-            {
-                bmp.Save(ms, ImageFormat.Png);
-                texture.LoadImage(ms.ToArray());
-            }
+            var bmp = Icon.ExtractAssociatedIcon(filePath).ToBitmap();
+            bmp.Save(ms, ImageFormat.Png);
+            texture.LoadImage(ms.ToArray());
         }
 
-        DestroyIcon(iconHandle);
+        texture.Apply();
         return texture;
     }
 }

@@ -9,12 +9,6 @@ public class DockLinks : MonoBehaviour, IEntriable
     {
     }
 
-    private void CheckThumbnail(string file)
-    {
-        var texture = FileThumbnail.GetThumbnail(file);
-        Links.Add(new Link { Image = texture, Path = file });
-    }
-
     public struct Link
     {
         public Texture2D Image;
@@ -23,12 +17,17 @@ public class DockLinks : MonoBehaviour, IEntriable
 
     public ObservableList<Link> Links;
 
-    private void RebuildImages()
+    private void UpdateImages()
     {
+        Links = new ObservableList<Link>();
         foreach (var file in Directory.EnumerateFiles(ConfigEntry.Instance.LinksPath, "*.*",
                      new EnumerationOptions { IgnoreInaccessible = true, RecurseSubdirectories = true }))
         {
-            CheckThumbnail(file);
+            var current = file.Replace('/', Path.DirectorySeparatorChar);
+            current = current.Replace('\\', Path.DirectorySeparatorChar);
+            Debug.Log(current);
+            var texture = FileThumbnail.GetThumbnail(current);
+            Links.Add(new Link { Image = texture, Path = current });
         }
     }
 
@@ -36,5 +35,6 @@ public class DockLinks : MonoBehaviour, IEntriable
     {
         if (!Directory.Exists(ConfigEntry.Instance.LinksPath))
             Directory.CreateDirectory(ConfigEntry.Instance.LinksPath);
+        UpdateImages();
     }
 }
