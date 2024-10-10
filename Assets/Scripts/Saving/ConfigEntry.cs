@@ -14,7 +14,6 @@ namespace Saving
 
         void IEntriable.Begin()
         {
-            Debug.Log(GlobalFileSaver.Path);
             var configSaver = new ConfigFileSaver();
             var config = new Config(configSaver);
             string configText;

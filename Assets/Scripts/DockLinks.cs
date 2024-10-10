@@ -25,7 +25,6 @@ public class DockLinks : MonoBehaviour, IEntriable
         {
             var current = file.Replace('/', Path.DirectorySeparatorChar);
             current = current.Replace('\\', Path.DirectorySeparatorChar);
-            Debug.Log(current);
             var texture = FileThumbnail.GetThumbnail(current);
             Links.Add(new Link { Image = texture, Path = current });
         }

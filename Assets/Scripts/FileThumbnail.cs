@@ -74,13 +74,13 @@ public static class FileThumbnail
         }
 
         var icon = Icon.FromHandle(hIcon);
-        var bmp = new Bitmap(iconSize, iconSize);
+        var bmp = new Bitmap(icon.Width, icon.Height);
         using (var g = Graphics.FromImage(bmp))
         {
             g.DrawIcon(icon, 0, 0);
         }
 
-        var texture = new Texture2D(iconSize, iconSize, TextureFormat.ARGB32, false);
+        var texture = new Texture2D(icon.Width, icon.Height, TextureFormat.ARGB32, false);
 
         using (var ms = new MemoryStream())
         {

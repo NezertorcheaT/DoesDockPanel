@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using CustomHelper;
+using R3;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace UI
 {
@@ -9,6 +11,7 @@ namespace UI
     {
         [SerializeField] private DockLinks dockLinks;
         [SerializeField] private Transform container;
+        [SerializeField] private LinkUI linkPrefab;
 
         private void OnEnable()
         {
@@ -28,10 +31,9 @@ namespace UI
             container.ClearKids();
             foreach (var link in sender)
             {
-                var image = new GameObject(link.Path);
-                var rawImage = image.AddComponent<RawImage>();
-                rawImage.texture = link.Image;
-                image.transform.SetParent(container);
+                var i = Instantiate(linkPrefab, Vector3.zero, Quaternion.identity, container);
+                i.Initialize(link);
+                i.Open.Subscribe(l => Helper.OpenWithDefaultProgram(l.Path));
             }
         }
 
@@ -54,6 +56,15 @@ namespace CustomHelper
             {
                 Object.Destroy(transform.GetChild(i).gameObject);
             }
+        }
+
+        public static void OpenWithDefaultProgram(string file)
+        {
+            using var filerOpener = new Process();
+
+            filerOpener.StartInfo.FileName = "explorer";
+            filerOpener.StartInfo.Arguments = file;
+            filerOpener.Start();
         }
     }
 }
