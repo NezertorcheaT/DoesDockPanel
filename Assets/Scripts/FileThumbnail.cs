@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using CustomHelper;
 using UnityEngine;
 using Graphics = System.Drawing.Graphics;
 
@@ -57,15 +58,16 @@ public static class FileThumbnail
         SysIconIndex = 0x000004000,
     }
 
-    public static Texture2D GetThumbnail(string filePath, int iconSize = 512)
+    public static Texture2D GetThumbnail(string filePath)
     {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
+
         var info = new SHFILEINFO(true);
         var cbFileInfo = Marshal.SizeOf(info);
-        const SHGFI flags = SHGFI.Icon | SHGFI.ShellIconSize | SHGFI.SysIconIndex | SHGFI.UseFileAttributes;
 
-        SHGetFileInfo(filePath, 256, out info, (uint)cbFileInfo, flags);
-
+        // Try getting the largest icon first (SHGFI.LargeIcon)
+        const SHGFI flagsLarge = SHGFI.Icon | SHGFI.LargeIcon | SHGFI.SysIconIndex | SHGFI.UseFileAttributes;
+        SHGetFileInfo(filePath, 256, out info, (uint)cbFileInfo, flagsLarge);
         var hIcon = info.hIcon;
         if (hIcon == IntPtr.Zero)
         {
@@ -80,21 +82,31 @@ public static class FileThumbnail
             g.DrawIcon(icon, 0, 0);
         }
 
-        var texture = new Texture2D(icon.Width, icon.Height, TextureFormat.ARGB32, false);
-
-        using (var ms = new MemoryStream())
-        {
-            bmp.Save(ms, ImageFormat.Png);
-            texture.LoadImage(ms.ToArray());
-        }
-
-        texture.Apply();
         DestroyIcon(hIcon);
-
-        return texture;
+        return bmp.AsTexture2D();
 #else
         Debug.LogError("This functionality is only supported on Windows.");
         return null;
 #endif
+    }
+}
+
+namespace CustomHelper
+{
+    public static partial class Helper
+    {
+        public static Texture2D AsTexture2D(this Bitmap bitmap)
+        {
+            var texture = new Texture2D(bitmap.Width, bitmap.Height, TextureFormat.ARGB32, false);
+
+            using (var ms = new MemoryStream())
+            {
+                bitmap.Save(ms, ImageFormat.Png);
+                texture.LoadImage(ms.ToArray());
+            }
+
+            texture.Apply();
+            return texture;
+        }
     }
 }

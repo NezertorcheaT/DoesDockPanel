@@ -50,7 +50,7 @@ namespace UI
         private void Close()
         {
             Tween.UIAnchoredPositionX(container,
-                new TweenSettings<float>(200, 0.4f, Ease.InCubic));
+                new TweenSettings<float>(500, 0.4f, Ease.InCubic));
         }
 
         private void OnDestroy()
