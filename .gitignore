@@ -10,6 +10,12 @@
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
 
+Thumbnails/[Bb]in/
+Thumbnails/[Oo]bj/
+Thumbnails/_UpgradeReport_Files/
+Thumbnails/[Pp]ackages/
+Thumbnails/[Ll]ogs/
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/

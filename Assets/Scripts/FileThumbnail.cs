@@ -1,154 +1,100 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using CustomHelper;
+using Cysharp.Threading.Tasks;
+using UnityEditor;
+#if UNITY_EDITOR
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
+#endif
 using UnityEngine;
-using Graphics = System.Drawing.Graphics;
+using Debug = UnityEngine.Debug;
 
 public static class FileThumbnail
 {
-    [DllImport("user32.dll", CharSet = CharSet.Auto)]
-    private static extern bool DestroyIcon(IntPtr hIcon);
+    public static readonly string CacheThumbnailFile =
+        Path.Combine(Application.persistentDataPath, "cache.png").Replace('\\', '/');
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    private struct SHFILEINFO
+    public static readonly string ThumbnailSolution =
+        Path.Combine(Application.dataPath.Replace("Assets", "Thumbnails"), "Thumbnails.csproj").Replace('\\', '/');
+#if UNITY_EDITOR
+    public static readonly string BuildArtifacts =
+        Path.Combine(Application.dataPath.Replace("Assets", "Build"), $"{Application.productName}_Data/Thumbnails")
+            .Replace('\\', '/');
+#else
+    public static readonly string BuildArtifacts =
+        Path.Combine(Application.dataPath.Replace("Assets", "Build"), "Thumbnails").Replace('\\', '/');
+#endif
+
+    public static readonly string ThumbnailsExecutable =
+        Path.Combine(BuildArtifacts, "bin/Thumbnails/debug/Thumbnails.exe").Replace('\\', '/');
+
+#if UNITY_EDITOR
+    [MenuItem("File/Build Thumbnails", false, 3)]
+    public static async Task RebuildThumbnailsSolution()
     {
-        public SHFILEINFO(bool b)
+        Debug.Log(CacheThumbnailFile);
+        Debug.Log(ThumbnailsExecutable);
+        Debug.Log(BuildArtifacts);
+        Debug.Log(ThumbnailSolution);
+        Debug.Log($"\"{ThumbnailSolution}\" --artifacts-path \"{BuildArtifacts}\"");
+
+        if (!Directory.Exists(BuildArtifacts))
+            Directory.CreateDirectory(BuildArtifacts);
+        using (var process = new Process())
         {
-            hIcon = IntPtr.Zero;
-            iIcon = 0;
-            dwAttributes = 0;
-            szDisplayName = "";
-            szTypeName = "";
+            process.StartInfo.FileName = "dotnet";
+            process.StartInfo.Arguments = $"build \"{ThumbnailSolution}\" --artifacts-path \"{BuildArtifacts}\"";
+            process.Start();
+            await UniTask.WaitWhile(() => !process.HasExited);
         }
 
-        public IntPtr hIcon;
-        public int iIcon;
-        public uint dwAttributes;
-
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
-        public string szDisplayName;
-
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_TYPE)]
-        public string szTypeName;
+        Directory.Delete(Path.Combine(BuildArtifacts, "obj"), true);
     }
+#endif
 
-    private const int MAX_PATH = 260;
-    private const int MAX_TYPE = 80;
-
-    [DllImport("shell32.dll", CharSet = CharSet.Auto)]
-    private static extern int SHDefExtractIconA(
-        string pszIconFile,
-        int iIndex,
-        SHGFI uFlags,
-        IntPtr phiconLarge,
-        IntPtr phiconSmall,
-        uint nIconSize
-    );
-
-    [DllImport("shell32.dll", CharSet = CharSet.Auto)]
-    private static extern int SHGetFileInfo(
-        string pszPath,
-        int dwFileAttributes,
-        out SHFILEINFO psfi,
-        uint cbfileInfo,
-        SHGFI uFlags);
-
-    [Flags]
-    enum SHGFI : int
-    {
-        /// <summary>get icon</summary>
-        Icon = 0x000000100,
-
-        /// <summary>get display name</summary>
-        DisplayName = 0x000000200,
-
-        /// <summary>get type name</summary>
-        TypeName = 0x000000400,
-
-        /// <summary>get attributes</summary>
-        Attributes = 0x000000800,
-
-        /// <summary>get icon location</summary>
-        IconLocation = 0x000001000,
-
-        /// <summary>return exe type</summary>
-        ExeType = 0x000002000,
-
-        /// <summary>get system icon index</summary>
-        SysIconIndex = 0x000004000,
-
-        /// <summary>put a link overlay on icon</summary>
-        LinkOverlay = 0x000008000,
-
-        /// <summary>show icon in selected state</summary>
-        Selected = 0x000010000,
-
-        /// <summary>get only specified attributes</summary>
-        Attr_Specified = 0x000020000,
-
-        /// <summary>get large icon</summary>
-        LargeIcon = 0x000000000,
-
-        /// <summary>get small icon</summary>
-        SmallIcon = 0x000000001,
-
-        /// <summary>get open icon</summary>
-        OpenIcon = 0x000000002,
-
-        /// <summary>get shell size icon</summary>
-        ShellIconSize = 0x000000004,
-
-        /// <summary>pszPath is a pidl</summary>
-        PIDL = 0x000000008,
-
-        /// <summary>use passed dwFileAttribute</summary>
-        UseFileAttributes = 0x000000010,
-
-        /// <summary>apply the appropriate overlays</summary>
-        AddOverlays = 0x000000020,
-
-        /// <summary>Get the index of the overlay in the upper 8 bits of the iIcon</summary>
-        OverlayIndex = 0x000000040,
-    }
-
-
-    public static Texture2D GetThumbnail(string filePath)
+    public static async Task<Texture2D> GetThumbnail(string filePath)
     {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
-
-        var info = new SHFILEINFO(true);
-        var cbFileInfo = Marshal.SizeOf(info);
-        var hIcon = new IntPtr(0);
-
-        const SHGFI flagsLarge = SHGFI.Icon | SHGFI.LargeIcon | SHGFI.UseFileAttributes | SHGFI.ShellIconSize;
-        var ind = SHGetFileInfo(filePath, 256, out info, (uint)cbFileInfo, SHGFI.SysIconIndex);
-        SHGetFileInfo(filePath, 256, out info, (uint)cbFileInfo, flagsLarge);
-        hIcon = info.hIcon;
-        SHDefExtractIconA(filePath, ind, flagsLarge, hIcon, new IntPtr(0), 256);
-        if (hIcon == IntPtr.Zero)
+        Debug.Log(CacheThumbnailFile);
+        Debug.Log(ThumbnailsExecutable);
+        Debug.Log(BuildArtifacts);
+        Debug.Log($"\"{filePath}\" \"{CacheThumbnailFile}\"");
+        using (var process = new Process())
         {
-            Debug.LogError("Failed to extract icon from file: " + filePath);
-            return null;
+            process.StartInfo.FileName = ThumbnailsExecutable;
+            process.StartInfo.Arguments = $"\"{filePath}\" \"{CacheThumbnailFile}\"";
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            process.Start();
+            await UniTask.WaitWhile(() => !process.HasExited);
         }
 
-        var icon = Icon.FromHandle(hIcon);
-        var bmp = new Bitmap(icon.Width, icon.Height);
-        using (var g = Graphics.FromImage(bmp))
-        {
-            g.DrawIcon(icon, 0, 0);
-        }
-
-        DestroyIcon(hIcon);
-        return bmp.AsTexture2D();
+        var bm = new Bitmap(CacheThumbnailFile);
+        var thumbnail = bm.AsTexture2D();
+        bm.Dispose();
+        return thumbnail;
 #else
         Debug.LogError("This functionality is only supported on Windows.");
         return null;
 #endif
     }
 }
+
+
+#if UNITY_EDITOR
+public class ThumbnailsSolutionBuilder : IPostprocessBuildWithReport
+{
+    public int callbackOrder => 0;
+
+    public async void OnPostprocessBuild(BuildReport report)
+    {
+        await FileThumbnail.RebuildThumbnailsSolution();
+    }
+}
+#endif
 
 namespace CustomHelper
 {

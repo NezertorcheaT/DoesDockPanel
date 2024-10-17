@@ -17,7 +17,7 @@ public class DockLinks : MonoBehaviour, IEntriable
 
     public ObservableList<Link> Links;
 
-    private void UpdateImages()
+    private async void UpdateImages()
     {
         Links = new ObservableList<Link>();
         foreach (var file in Directory.EnumerateFiles(ConfigEntry.Instance.LinksPath, "*.*",
@@ -25,7 +25,7 @@ public class DockLinks : MonoBehaviour, IEntriable
         {
             var current = file.Replace('/', Path.DirectorySeparatorChar);
             current = current.Replace('\\', Path.DirectorySeparatorChar);
-            var texture = FileThumbnail.GetThumbnail(current);
+            var texture = await FileThumbnail.GetThumbnail(current);
             Links.Add(new Link { Image = texture, Path = current });
         }
     }

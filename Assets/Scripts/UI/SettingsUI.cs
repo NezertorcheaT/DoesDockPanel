@@ -3,6 +3,7 @@ using R3;
 using UnityEngine;
 using UnityEngine.UI;
 using PrimeTween;
+using TMPro;
 using UnityEngine.EventSystems;
 
 namespace UI
