@@ -36,6 +36,19 @@ namespace Saving
 
         private TextAnchor _textAnchor = TextAnchor.UpperCenter;
 
+        public FolderSide FolderItemsPosition
+        {
+            get => _folderItemsPosition;
+            set
+            {
+                _folderItemsPosition = value;
+                _saver.Save(this);
+            }
+        }
+
+        private FolderSide _folderItemsPosition = FolderSide.Down;
+
+
         public bool IsVertical
         {
             get => _isVertical;
@@ -61,11 +74,12 @@ namespace Saving
         private IFileSaver<string> _saver;
 
         [JsonConstructor]
-        private Config(string linksPath, TextAnchor textAnchor, bool isVertical)
+        private Config(string linksPath, TextAnchor textAnchor, bool isVertical, FolderSide folderItemsPosition)
         {
             _linksPath = linksPath;
             _textAnchor = textAnchor;
             _isVertical = isVertical;
+            _folderItemsPosition = folderItemsPosition;
         }
 
         public Config(ConfigFileSaver saver)
@@ -84,5 +98,13 @@ namespace Saving
             deserialized._saver = saver;
             return deserialized;
         }
+    }
+
+    public enum FolderSide
+    {
+        Right,
+        Left,
+        Down,
+        Up
     }
 }

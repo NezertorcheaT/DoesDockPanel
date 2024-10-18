@@ -15,7 +15,7 @@ public partial class App
 
         if (e.Args.Length != 2)
         {
-            Shutdown();
+            Shutdown(1);
             return;
         }
 

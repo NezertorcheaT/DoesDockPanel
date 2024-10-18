@@ -36,12 +36,6 @@ public static class FileThumbnail
     [MenuItem("File/Build Thumbnails", false, 3)]
     public static async Task RebuildThumbnailsSolution()
     {
-        Debug.Log(CacheThumbnailFile);
-        Debug.Log(ThumbnailsExecutable);
-        Debug.Log(BuildArtifacts);
-        Debug.Log(ThumbnailSolution);
-        Debug.Log($"\"{ThumbnailSolution}\" --artifacts-path \"{BuildArtifacts}\"");
-
         if (!Directory.Exists(BuildArtifacts))
             Directory.CreateDirectory(BuildArtifacts);
         using (var process = new Process())
@@ -59,10 +53,6 @@ public static class FileThumbnail
     public static async Task<Texture2D> GetThumbnail(string filePath)
     {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
-        Debug.Log(CacheThumbnailFile);
-        Debug.Log(ThumbnailsExecutable);
-        Debug.Log(BuildArtifacts);
-        Debug.Log($"\"{filePath}\" \"{CacheThumbnailFile}\"");
         using (var process = new Process())
         {
             process.StartInfo.FileName = ThumbnailsExecutable;

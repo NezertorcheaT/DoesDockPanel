@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using CustomHelper;
-using R3;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
@@ -12,6 +11,7 @@ namespace UI
         [SerializeField] private DockLinks dockLinks;
         [SerializeField] private Transform container;
         [SerializeField] private LinkUI linkPrefab;
+        [SerializeField] private FolderUI folderPrefab;
 
         private void OnEnable()
         {
@@ -25,16 +25,11 @@ namespace UI
             dockLinks.Links.ItemRemoved -= UpdateGUI;
         }
 
-        private void UpdateGUI(ObservableList<DockLinks.Link> sender,
-            ListChangedEventArgs<DockLinks.Link> listChangedEventArgs)
+        private void UpdateGUI(ObservableList<DockLinks.FileObject> sender,
+            ListChangedEventArgs<DockLinks.FileObject> listChangedEventArgs)
         {
             container.ClearKids();
-            foreach (var link in sender)
-            {
-                var i = Instantiate(linkPrefab, Vector3.zero, Quaternion.identity, container);
-                i.Initialize(link);
-                i.Open.Subscribe(l => Helper.OpenWithDefaultProgram(l.Path));
-            }
+            Helper.FillContainerWithFiles(container, sender, linkPrefab, folderPrefab);
         }
 
         public void Begin()

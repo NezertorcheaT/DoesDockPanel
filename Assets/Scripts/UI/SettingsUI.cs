@@ -3,7 +3,6 @@ using R3;
 using UnityEngine;
 using UnityEngine.UI;
 using PrimeTween;
-using TMPro;
 using UnityEngine.EventSystems;
 
 namespace UI
@@ -45,13 +44,13 @@ namespace UI
         private void Open()
         {
             Tween.UIAnchoredPositionX(container,
-                new TweenSettings<float>(0f, 0.4f, Ease.InCubic));
+                new TweenSettings<float>(0f, 0.4f, Ease.OutCubic));
         }
 
         private void Close()
         {
             Tween.UIAnchoredPositionX(container,
-                new TweenSettings<float>(500, 0.4f, Ease.InCubic));
+                new TweenSettings<float>(500, 0.4f, Ease.OutCubic));
         }
 
         private void OnDestroy()
