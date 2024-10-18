@@ -259,6 +259,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -5692397341044946194, guid: 47d37ba12c926b9478e26fcf48add095, type: 3}
+      propertyPath: fileUI
+      value: 
+      objectReference: {fileID: 7840457234489175652}
     - target: {fileID: 5106002446661536322, guid: 47d37ba12c926b9478e26fcf48add095, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -400,6 +404,19 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8224534113673736960, guid: 47d37ba12c926b9478e26fcf48add095, type: 3}
   m_PrefabInstance: {fileID: 3152937103483808646}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3557309018247054662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6476758611339499654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dc5bc39fd872354dafceacb4e651db1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  folder: {fileID: 7840457234489175652}
 --- !u!114 &7840457234489175652
 MonoBehaviour:
   m_ObjectHideFlags: 0

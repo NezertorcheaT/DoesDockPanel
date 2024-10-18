@@ -64,7 +64,6 @@ public class DockLinks : MonoBehaviour, IEntriable
                      )
                 )
         {
-            Debug.Log(file);
             var texture = await FileThumbnail.GetThumbnail(file);
             if (!Directory.Exists(file))
                 collection.Add(new Link { Image = texture, File = file });

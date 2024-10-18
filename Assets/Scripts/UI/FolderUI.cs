@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using CustomHelper;
 using R3;
 using Saving;
@@ -11,6 +12,7 @@ namespace UI
     public class FolderUI : FileUI
     {
         public DockLinks.Folder CurrentFolder => CurrentFile as DockLinks.Folder;
+        public readonly ObservableList<FileUI> InnerUIs = new();
         [SerializeField] private Texture2D folderTexture;
         [SerializeField] private LinkUI linkPrefab;
         [SerializeField] private FolderUI folderPrefab;
@@ -56,7 +58,8 @@ namespace UI
                 FolderSide.Left => containerL,
                 _ => containerD
             };
-            Helper.FillContainerWithFiles(container, sender, linkPrefab, folderPrefab);
+            InnerUIs.Clear();
+            InnerUIs.Add(Helper.GetFilesForContainer(container, sender, linkPrefab, folderPrefab).ToArray());
         }
     }
 }
@@ -65,23 +68,43 @@ namespace CustomHelper
 {
     public static partial class Helper
     {
-        public static void FillContainerWithFiles(Transform container, IEnumerable<DockLinks.FileObject> files,
-            LinkUI linkPrefab, FolderUI folderPrefab)
+        public static void FillContainerWithFiles(
+            Transform container,
+            IEnumerable<DockLinks.FileObject> files,
+            LinkUI linkPrefab,
+            FolderUI folderPrefab
+        )
+        {
+            foreach (var fileUI in GetFilesForContainer(container, files, linkPrefab, folderPrefab))
+            {
+            }
+        }
+
+        public static IEnumerable<FileUI> GetFilesForContainer(
+            Transform container,
+            IEnumerable<DockLinks.FileObject> files,
+            LinkUI linkPrefab,
+            FolderUI folderPrefab
+        )
         {
             foreach (var file in files)
             {
+                FileUI i = null;
                 if (file is DockLinks.Link link)
                 {
-                    var i = Object.Instantiate(linkPrefab, Vector3.zero, Quaternion.identity, container);
+                    i = Object.Instantiate(linkPrefab, Vector3.zero, Quaternion.identity, container);
                     i.Initialize(link);
-                    i.Click.Subscribe(l => Helper.OpenWithDefaultProgram(l.File));
+                    i.Click.Subscribe(l => OpenWithDefaultProgram(l.File));
                 }
 
                 if (file is DockLinks.Folder folder)
                 {
-                    var i = Object.Instantiate(folderPrefab, Vector3.zero, Quaternion.identity, container);
-                    i.Initialize(folder);
+                    var folderUI = Object.Instantiate(folderPrefab, Vector3.zero, Quaternion.identity, container);
+                    folderUI.Initialize(folder);
+                    i = folderUI;
                 }
+
+                yield return i;
             }
         }
     }
