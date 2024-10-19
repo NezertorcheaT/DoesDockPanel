@@ -25,6 +25,11 @@ namespace UI
             dockLinks.Links.ItemRemoved -= UpdateGUI;
         }
 
+        public void Redraw()
+        {
+            UpdateGUI(dockLinks.Links, null);
+        }
+
         private void UpdateGUI(ObservableList<DockLinks.FileObject> sender,
             ListChangedEventArgs<DockLinks.FileObject> listChangedEventArgs)
         {
@@ -34,7 +39,7 @@ namespace UI
 
         public void Begin()
         {
-            UpdateGUI(dockLinks.Links, null);
+            Redraw();
         }
     }
 }

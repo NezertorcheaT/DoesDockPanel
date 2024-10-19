@@ -4916,6 +4916,7 @@ MonoBehaviour:
   Down: {fileID: 1740933569}
   Right: {fileID: 1792635656}
   Left: {fileID: 1838073605}
+  bar: {fileID: 776018115}
 --- !u!1 &1982828341
 GameObject:
   m_ObjectHideFlags: 0

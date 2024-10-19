@@ -12,6 +12,7 @@ namespace UI
         [SerializeField] private Button Down;
         [SerializeField] private Button Right;
         [SerializeField] private Button Left;
+        [SerializeField] private BarImages bar;
         private IDisposable _disposable;
 
         private void Awake()
@@ -26,8 +27,11 @@ namespace UI
 
         private void SetAnchor(ref DisposableBuilder builder, Button button, FolderSide anchor)
         {
-            button.onClick.AsObservable().Subscribe(_ => { ConfigEntry.Instance.FolderItemsPosition = anchor; })
-                .AddTo(ref builder);
+            button.onClick.AsObservable().Subscribe(_ =>
+            {
+                ConfigEntry.Instance.FolderItemsPosition = anchor;
+                bar?.Redraw();
+            }).AddTo(ref builder);
         }
 
         private void OnDestroy()
