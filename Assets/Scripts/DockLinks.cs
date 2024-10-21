@@ -51,20 +51,21 @@ public class DockLinks : MonoBehaviour, IEntriable
 
     private static async Task Populate(ICollection<FileObject> collection, string root)
     {
-        foreach (var file in Directory
-                     .EnumerateFileSystemEntries(root, "**", new EnumerationOptions { IgnoreInaccessible = true })
-                     .Select(i => i
-                         .Replace('/', Path.DirectorySeparatorChar)
-                         .Replace('\\', Path.DirectorySeparatorChar)
-                     )
-                     .OrderBy(i => !Directory.Exists(i))
-                     .ThenBy(i => i
-                         .Split(Path.DirectorySeparatorChar)
-                         .Last()
-                     )
-                )
+        var textures = await Task.WhenAll(Directory
+            .EnumerateFileSystemEntries(root, "**", new EnumerationOptions { IgnoreInaccessible = true })
+            .Select(i => i
+                .Replace('/', Path.DirectorySeparatorChar)
+                .Replace('\\', Path.DirectorySeparatorChar)
+            )
+            .OrderBy(i => !Directory.Exists(i))
+            .ThenBy(i => i
+                .Split(Path.DirectorySeparatorChar)
+                .Last()
+            )
+            .Select(async i => (i, await FileThumbnail.GetThumbnail(i)))
+        );
+        foreach (var (file, texture) in textures)
         {
-            var texture = await FileThumbnail.GetThumbnail(file);
             if (!Directory.Exists(file))
                 collection.Add(new Link { Image = texture, File = file });
             else

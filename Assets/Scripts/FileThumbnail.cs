@@ -11,15 +11,9 @@ using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 #endif
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 public static class FileThumbnail
 {
-    public static readonly string CacheThumbnailFile =
-        Path.Combine(Application.persistentDataPath, "cache.png")
-            .Replace('/', Path.DirectorySeparatorChar)
-            .Replace('\\', Path.DirectorySeparatorChar);
-
     public static readonly string ThumbnailSolution =
         Path.Combine(Application.dataPath.Replace("Assets", "Thumbnails"), "Thumbnails.csproj")
             .Replace('/', Path.DirectorySeparatorChar)
@@ -63,19 +57,38 @@ public static class FileThumbnail
     public static async Task<Texture2D> GetThumbnail(string filePath)
     {
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
-        using (var process = new Process())
+        var cacheThumbnailFile = Path
+            .ChangeExtension(
+                Path.Combine(
+                    Application.persistentDataPath,
+                    $"{Path.GetRandomFileName()}"
+                ),
+                "png"
+            )
+            .Replace('/', Path.DirectorySeparatorChar)
+            .Replace('\\', Path.DirectorySeparatorChar);
+        try
         {
-            process.StartInfo.FileName = ThumbnailsExecutable;
-            process.StartInfo.Arguments = $"\"{filePath}\" \"{CacheThumbnailFile}\"";
-            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            process.Start();
-            await UniTask.WaitWhile(() => !process.HasExited);
-        }
+            using (var process = new Process())
+            {
+                process.StartInfo.FileName = ThumbnailsExecutable;
+                process.StartInfo.Arguments = $"\"{filePath}\" \"{cacheThumbnailFile}\"";
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.Start();
+                await UniTask.WaitWhile(() => !process.HasExited);
+            }
 
-        var bm = new Bitmap(CacheThumbnailFile);
-        var thumbnail = bm.AsTexture2D();
-        bm.Dispose();
-        return thumbnail;
+            if ((await File.ReadAllBytesAsync(cacheThumbnailFile)).Length == 0) return null;
+            var bm = new Bitmap(cacheThumbnailFile);
+            var thumbnail = bm.AsTexture2D();
+            bm.Dispose();
+            return thumbnail;
+        }
+        finally
+        {
+            if (File.Exists(cacheThumbnailFile))
+                File.Delete(cacheThumbnailFile);
+        }
 #else
         Debug.LogError("This functionality is only supported on Windows.");
         return null;

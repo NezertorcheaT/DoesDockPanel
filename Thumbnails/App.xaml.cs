@@ -22,7 +22,7 @@ public partial class App
         var file = e.Args[0];
         var to = e.Args[1];
         if (!File.Exists(to))
-            File.Create(to);
+            File.Create(to).Dispose();
         var image = GetIcon(file);
         using (var s = new FileStream(to, FileMode.Open))
         {
