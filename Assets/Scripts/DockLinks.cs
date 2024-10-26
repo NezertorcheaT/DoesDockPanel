@@ -13,8 +13,35 @@ public class DockLinks : MonoBehaviour, IEntriable
     {
     }
 
-    public abstract class FileObject : IDisposable
+    public abstract class FileObject : IDisposable, IEquatable<FileObject>
     {
+        public bool Equals(FileObject other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return File == other.File;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return ReferenceEquals(this, obj) || obj is FileObject other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return File.GetHashCode();
+        }
+
+        public static bool operator ==(FileObject left, FileObject right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(FileObject left, FileObject right)
+        {
+            return !Equals(left, right);
+        }
+
         public Texture2D Image;
         public string File;
         public override string ToString() => $"{base.ToString()} {{ File: {File}, Image: {Image} }}";
@@ -23,6 +50,12 @@ public class DockLinks : MonoBehaviour, IEntriable
 
     public class Link : FileObject
     {
+        public Link(Texture2D image, string file)
+        {
+            Image = image;
+            File = file;
+        }
+
         public override void Dispose()
         {
         }
@@ -46,7 +79,7 @@ public class DockLinks : MonoBehaviour, IEntriable
 
         public override void Dispose()
         {
-            Links.Clear();
+            Links.Dispose();
         }
     }
 
@@ -57,16 +90,15 @@ public class DockLinks : MonoBehaviour, IEntriable
         await Populate(Links, ConfigEntry.Instance.LinksPath);
     }
 
+    private void OnDestroy()
+    {
+        Links.Dispose();
+    }
+
     private static async Task Populate(ICollection<FileObject> collection, string root)
     {
-        for (var i = 0; i < collection.Count; i++)
-        {
-            var fileObject = collection.First();
-            fileObject.Dispose();
-            collection.Remove(fileObject);
-        }
+        collection.Dispose();
 
-        Debug.Log(collection.Count);
         foreach (
             var (file, texture)
             in await Task.WhenAll(Directory
@@ -84,9 +116,8 @@ public class DockLinks : MonoBehaviour, IEntriable
             )
         )
         {
-            Debug.Log(file);
             if (!Directory.Exists(file))
-                collection.Add(new Link { Image = texture, File = file });
+                collection.Add(new Link(texture, file));
             else
             {
                 var folder = new Folder(texture, file);
@@ -94,8 +125,6 @@ public class DockLinks : MonoBehaviour, IEntriable
                 collection.Add(folder);
             }
         }
-
-        Debug.Log(collection.Count);
     }
 
     void IEntriable.Begin()
@@ -103,5 +132,24 @@ public class DockLinks : MonoBehaviour, IEntriable
         if (!Directory.Exists(ConfigEntry.Instance.LinksPath))
             Directory.CreateDirectory(ConfigEntry.Instance.LinksPath);
         UpdateImages();
+    }
+}
+
+public static class FileObjectUtility
+{
+    public static void Dispose(this ICollection<DockLinks.FileObject> collection)
+    {
+        while (true)
+        {
+            for (var i = 0; i < collection.Count; i++)
+            {
+                var fileObject = collection.First();
+                fileObject.Dispose();
+                collection.Remove(fileObject);
+            }
+
+            collection.Clear();
+            if (collection.Count == 0) break;
+        }
     }
 }
