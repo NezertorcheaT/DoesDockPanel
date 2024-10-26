@@ -9,8 +9,36 @@ namespace Saving.Converters
     {
         public override Vector3 Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return JsonUtility.FromJson<Vector3>(reader.GetString()!);
+            var v = new Vector3();
+            while (reader.Read())
+            {
+                var tokenType = reader.TokenType;
+
+                if (tokenType == JsonTokenType.EndObject)
+                    return v;
+                if (tokenType != JsonTokenType.PropertyName)
+                    continue;
+                
+                if (reader.ValueTextEquals("x"))
+                {
+                    reader.Read();
+                    v.x = reader.GetSingle();
+                }
+                else if (reader.ValueTextEquals("y"))
+                {
+                    reader.Read();
+                    v.y = reader.GetSingle();
+                }
+                else if (reader.ValueTextEquals("z"))
+                {
+                    reader.Read();
+                    v.z = reader.GetSingle();
+                }
+            }
+
+            return v;
         }
+
 
         public override void Write(Utf8JsonWriter writer, Vector3 value, JsonSerializerOptions options)
         {

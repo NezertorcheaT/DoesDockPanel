@@ -3,27 +3,25 @@ using R3;
 using UnityEngine;
 using UnityEngine.UI;
 using PrimeTween;
+using Saving;
 using UnityEngine.EventSystems;
 
 namespace UI
 {
-    public class SettingsUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class SettingsUI : MonoBehaviour, IPointerEnterHandler
     {
+        [SerializeField] private Button closeButton;
         [SerializeField] private Image trigger;
         [SerializeField] private RectTransform container;
         public Observable<Unit> OnEntered { get; private set; }
-        public Observable<Unit> OnExited { get; private set; }
 
         private Subject<Unit> _onEntered;
-        private Subject<Unit> _onExited;
         private bool _opened;
         private IDisposable _disposableEvents;
 
         private void OnEnable()
         {
-            Close();
             _onEntered = new Subject<Unit>();
-            _onExited = new Subject<Unit>();
             var disposer = Disposable.CreateBuilder();
 
             OnEntered = _onEntered
@@ -32,48 +30,43 @@ namespace UI
                 ;
             OnEntered.Subscribe(_ => Open()).AddTo(ref disposer);
 
-            OnExited = _onExited
-                    .Where(_ => _opened)
-                    .Do(_ => _opened = false)
-                ;
-            OnExited.Subscribe(_ => Close()).AddTo(ref disposer);
+            closeButton.onClick.AsObservable()
+                .Where(_ => _opened)
+                .Do(_ => _opened = false)
+                .Subscribe(_ => Close()).AddTo(ref disposer);
 
             _disposableEvents = disposer.Build();
         }
 
+        private void Start()
+        {
+            Close();
+        }
+
         private void Open()
         {
-            Tween.UIAnchoredPositionX(container,
-                new TweenSettings<float>(0f, 0.4f, Ease.OutCubic));
+            Tween.UIAnchoredPosition(container,
+                new TweenSettings<Vector2>(ConfigEntry.Instance.SettingsPosition, 0.4f, Ease.OutCubic));
         }
 
         private void Close()
         {
-            Tween.UIAnchoredPositionX(container,
-                new TweenSettings<float>(500, 0.4f, Ease.OutCubic));
+            ConfigEntry.Instance.SettingsPosition = container.anchoredPosition;
+            Tween.UIAnchoredPosition(container,
+                new TweenSettings<Vector2>(new Vector2(1300, 200), 0.4f, Ease.OutCubic));
         }
 
         private void OnDestroy()
         {
+            if (_opened)
+                ConfigEntry.Instance.SettingsPosition = container.anchoredPosition;
             _disposableEvents.Dispose();
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (
-                eventData.hovered.Contains(trigger.gameObject) ||
-                eventData.hovered.Contains(container.gameObject)
-            )
+            if (eventData.hovered.Contains(trigger.gameObject))
                 _onEntered.OnNext(new Unit());
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            if (
-                eventData.hovered.Contains(trigger.gameObject) ||
-                eventData.hovered.Contains(container.gameObject)
-            )
-                _onExited.OnNext(new Unit());
         }
     }
 }

@@ -24,6 +24,18 @@ namespace Saving
 
         private string _linksPath = $"{GlobalFileSaver.Path}/Links";
 
+        public Vector3 SettingsPosition
+        {
+            get => _settingsPosition;
+            set
+            {
+                _settingsPosition = value;
+                _saver.Save(this);
+            }
+        }
+
+        private Vector3 _settingsPosition = new(722, 86);
+
         public TextAnchor TextAnchor
         {
             get => _textAnchor;
@@ -59,7 +71,7 @@ namespace Saving
             }
         }
 
-        private bool _isVertical;
+        private bool _isVertical = true;
 
         public static JsonSerializerOptions SerializerOptions => new()
         {
@@ -74,11 +86,18 @@ namespace Saving
         private IFileSaver<string> _saver;
 
         [JsonConstructor]
-        private Config(string linksPath, TextAnchor textAnchor, bool isVertical, FolderSide folderItemsPosition)
+        private Config(
+            string linksPath,
+            Vector3 settingsPosition,
+            TextAnchor textAnchor = TextAnchor.UpperCenter,
+            bool isVertical = true,
+            FolderSide folderItemsPosition = FolderSide.Down
+        )
         {
             _linksPath = linksPath;
             _textAnchor = textAnchor;
             _isVertical = isVertical;
+            _settingsPosition = settingsPosition != Vector3.zero ? settingsPosition : new Vector3(722, 86);
             _folderItemsPosition = folderItemsPosition;
         }
 
