@@ -60,6 +60,18 @@ namespace Saving
 
         private FolderSide _folderItemsPosition = FolderSide.Down;
 
+        public bool InnerFolderSide
+        {
+            get => _innerFolderSide;
+            set
+            {
+                _innerFolderSide = value;
+                _saver.Save(this);
+            }
+        }
+
+        private bool _innerFolderSide = true;
+
 
         public bool IsVertical
         {
@@ -91,7 +103,8 @@ namespace Saving
             Vector3 settingsPosition,
             TextAnchor textAnchor = TextAnchor.UpperCenter,
             bool isVertical = true,
-            FolderSide folderItemsPosition = FolderSide.Down
+            FolderSide folderItemsPosition = FolderSide.Down,
+            bool innerFolderSide = true
         )
         {
             _linksPath = linksPath;
@@ -99,6 +112,7 @@ namespace Saving
             _isVertical = isVertical;
             _settingsPosition = settingsPosition != Vector3.zero ? settingsPosition : new Vector3(722, 86);
             _folderItemsPosition = folderItemsPosition;
+            _innerFolderSide = innerFolderSide;
         }
 
         public Config(ConfigFileSaver saver)

@@ -12,7 +12,8 @@ namespace UI
     public class FolderUI : FileUI
     {
         public DockLinks.Folder CurrentFolder => CurrentFile as DockLinks.Folder;
-        public readonly ObservableList<FileUI> InnerUIs = new();
+        public IEnumerable<FileUI> InnerUIs => _innerUIs;
+
         [SerializeField] private Texture2D folderTexture;
         [SerializeField] private LinkUI linkPrefab;
         [SerializeField] private FolderUI folderPrefab;
@@ -20,10 +21,13 @@ namespace UI
         [SerializeField] private Transform containerL;
         [SerializeField] private Transform containerU;
         [SerializeField] private Transform containerD;
+        private List<FileUI> _innerUIs = new();
+        private bool _insideFolder;
 
-        public void Initialize(DockLinks.Folder folder)
+        public void Initialize(DockLinks.Folder folder, bool insideFolder = false)
         {
             Initialize(folder as DockLinks.FileObject);
+            _insideFolder = insideFolder;
             Image = folderTexture;
             UpdateGUI(CurrentFolder.Links, null);
             OnEnable();
@@ -50,16 +54,24 @@ namespace UI
             containerU.ClearKids();
             containerD.ClearKids();
 
-            var container = ConfigEntry.Instance.FolderItemsPosition switch
-            {
-                FolderSide.Up => containerU,
-                FolderSide.Down => containerD,
-                FolderSide.Right => containerR,
-                FolderSide.Left => containerL,
-                _ => containerD
-            };
-            InnerUIs.Clear();
-            InnerUIs.Add(Helper.GetFilesForContainer(container, sender, linkPrefab, folderPrefab).ToArray());
+            var container = (
+                        !_insideFolder
+                            ? ConfigEntry.Instance.FolderItemsPosition
+                            : ConfigEntry.Instance.InnerFolderSide
+                                ? FolderSide.Right
+                                : FolderSide.Left
+                    ) switch
+                    {
+                        FolderSide.Up => containerU,
+                        FolderSide.Down => containerD,
+                        FolderSide.Right => containerR,
+                        FolderSide.Left => containerL,
+                        _ => containerD
+                    }
+                ;
+            _innerUIs.Clear();
+            _innerUIs.AddRange(Helper.GetFilesForContainer(container, sender, linkPrefab, folderPrefab, _insideFolder)
+                .ToArray());
         }
     }
 }
@@ -72,10 +84,11 @@ namespace CustomHelper
             Transform container,
             IEnumerable<DockLinks.FileObject> files,
             LinkUI linkPrefab,
-            FolderUI folderPrefab
+            FolderUI folderPrefab,
+            bool insideFolder = true
         )
         {
-            foreach (var fileUI in GetFilesForContainer(container, files, linkPrefab, folderPrefab))
+            foreach (var _ in GetFilesForContainer(container, files, linkPrefab, folderPrefab, insideFolder))
             {
             }
         }
@@ -84,7 +97,8 @@ namespace CustomHelper
             Transform container,
             IEnumerable<DockLinks.FileObject> files,
             LinkUI linkPrefab,
-            FolderUI folderPrefab
+            FolderUI folderPrefab,
+            bool insideFolder = true
         )
         {
             foreach (var file in files)
@@ -100,7 +114,7 @@ namespace CustomHelper
                 if (file is DockLinks.Folder folder)
                 {
                     var folderUI = Object.Instantiate(folderPrefab, Vector3.zero, Quaternion.identity, container);
-                    folderUI.Initialize(folder);
+                    folderUI.Initialize(folder, !insideFolder);
                     i = folderUI;
                 }
 
