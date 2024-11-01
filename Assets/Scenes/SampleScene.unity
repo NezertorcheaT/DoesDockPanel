@@ -2587,12 +2587,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 720944f434ef76641ad6d0f579f14fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bar: {fileID: 776018115}
+  onToggle:
+    m_PersistentCalls:
+      m_Calls: []
+  onToggleBool:
+    m_PersistentCalls:
+      m_Calls: []
   button: {fileID: 256214320}
   dotTransform: {fileID: 1663797645}
   background: {fileID: 102239145}
-  onColor: {r: 0.7254902, g: 0.69411767, b: 0.12156863, a: 1}
+  onColor: {r: 0.60568327, g: 0.8207547, b: 0.16647384, a: 1}
   speed: 0.2
+  bar: {fileID: 776018115}
 --- !u!1 &721712021
 GameObject:
   m_ObjectHideFlags: 0
@@ -3756,12 +3762,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d65760eb766f647b185fa1d0e5166f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  group: {fileID: 1808608267}
+  onToggle:
+    m_PersistentCalls:
+      m_Calls: []
+  onToggleBool:
+    m_PersistentCalls:
+      m_Calls: []
   button: {fileID: 869426103}
   dotTransform: {fileID: 2071191235}
   background: {fileID: 437960548}
-  onColor: {r: 0.7264151, g: 0.69485754, b: 0.119927004, a: 1}
+  onColor: {r: 0.6039216, g: 0.81960785, b: 0.16470589, a: 1}
   speed: 0.2
+  group: {fileID: 1808608267}
 --- !u!1 &1176115076
 GameObject:
   m_ObjectHideFlags: 0

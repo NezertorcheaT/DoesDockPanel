@@ -54,24 +54,27 @@ namespace UI
             containerU.ClearKids();
             containerD.ClearKids();
 
-            var container = (
-                        !_insideFolder
-                            ? ConfigEntry.Instance.FolderItemsPosition
-                            : ConfigEntry.Instance.InnerFolderSide
+            var side =
+                    !_insideFolder
+                        ? ConfigEntry.Instance.FolderItemsPosition
+                        : ConfigEntry.Instance.FolderItemsPosition is FolderSide.Down or FolderSide.Up
+                            ? ConfigEntry.Instance.InnerFolderSide
                                 ? FolderSide.Right
                                 : FolderSide.Left
-                    ) switch
-                    {
-                        FolderSide.Up => containerU,
-                        FolderSide.Down => containerD,
-                        FolderSide.Right => containerR,
-                        FolderSide.Left => containerL,
-                        _ => containerD
-                    }
+                            : ConfigEntry.Instance.InnerFolderSide
+                                ? FolderSide.Up
+                                : FolderSide.Down
                 ;
+            var container = side switch
+            {
+                FolderSide.Up => containerU,
+                FolderSide.Down => containerD,
+                FolderSide.Right => containerR,
+                FolderSide.Left => containerL,
+                _ => containerD
+            };
             _innerUIs.Clear();
-            _innerUIs.AddRange(Helper.GetFilesForContainer(container, sender, linkPrefab, folderPrefab, _insideFolder)
-                .ToArray());
+            _innerUIs.AddRange(Helper.GetFilesForContainer(container, sender, linkPrefab, folderPrefab, _insideFolder));
         }
     }
 }

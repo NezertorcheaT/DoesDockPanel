@@ -133,6 +133,7 @@ namespace Saving
         }
     }
 
+    [Flags]
     public enum FolderSide
     {
         Right,
