@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.EventSystems;
+#if !UNITY_EDITOR
 using UnityEngine.InputSystem;
+#endif
+using VContainer.Unity;
 
-public class TransparentWindow : MonoBehaviour, IEntriable
+public class TransparentWindow : IStartable, ITickable
 {
     [DllImport("user32.dll")]
     private static extern IntPtr GetActiveWindow();
@@ -46,7 +49,7 @@ public class TransparentWindow : MonoBehaviour, IEntriable
         SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, 0);
     }
 
-    void IEntriable.Begin()
+    void IStartable.Start()
     {
         _rl = new List<RaycastResult>();
 #if !UNITY_EDITOR
@@ -57,7 +60,7 @@ public class TransparentWindow : MonoBehaviour, IEntriable
 
     private List<RaycastResult> _rl;
 
-    private void Update()
+    void ITickable.Tick()
     {
 #if !UNITY_EDITOR
         EventSystem.current.RaycastAll(

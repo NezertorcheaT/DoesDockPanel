@@ -3,16 +3,17 @@ using R3;
 using Saving;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace UI
 {
     public class FolderAnchoringButtonsUI : MonoBehaviour
     {
+        [Inject] private BarImages _bar;
         [SerializeField] private Button Up;
         [SerializeField] private Button Down;
         [SerializeField] private Button Right;
         [SerializeField] private Button Left;
-        [SerializeField] private BarImages bar;
         private IDisposable _disposable;
 
         private void Awake()
@@ -30,7 +31,7 @@ namespace UI
             button.onClick.AsObservable().Subscribe(_ =>
             {
                 ConfigEntry.Instance.FolderItemsPosition = anchor;
-                bar?.Redraw();
+                _bar?.Redraw();
             }).AddTo(ref builder);
         }
 

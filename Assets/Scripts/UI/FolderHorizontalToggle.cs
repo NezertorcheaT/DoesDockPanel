@@ -1,12 +1,13 @@
 using R3;
 using Saving;
 using UnityEngine;
+using VContainer;
 
 namespace UI
 {
     public class FolderHorizontalToggle : ToggleUI
     {
-        [SerializeField] private BarImages bar;
+        [Inject] private BarImages _bar;
 
         private void Start()
         {
@@ -14,7 +15,7 @@ namespace UI
             Toggling.Subscribe(args =>
             {
                 ConfigEntry.Instance.InnerFolderSide = args.Value;
-                bar?.Redraw();
+                _bar?.Redraw();
             });
         }
     }

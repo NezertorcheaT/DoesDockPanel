@@ -7,12 +7,8 @@ using Saving;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class DockLinks : MonoBehaviour, IEntriable
+public class DockLinks : MonoBehaviour
 {
-    private void Start()
-    {
-    }
-
     public abstract class FileObject : IDisposable, IEquatable<FileObject>
     {
         public bool Equals(FileObject other)
@@ -85,6 +81,13 @@ public class DockLinks : MonoBehaviour, IEntriable
 
     public readonly ObservableList<FileObject> Links = new();
 
+    private void Start()
+    {
+        if (!Directory.Exists(ConfigEntry.Instance.LinksPath))
+            Directory.CreateDirectory(ConfigEntry.Instance.LinksPath);
+        UpdateImages();
+    }
+
     public async void UpdateImages()
     {
         await Populate(Links, ConfigEntry.Instance.LinksPath);
@@ -125,13 +128,6 @@ public class DockLinks : MonoBehaviour, IEntriable
                 collection.Add(folder);
             }
         }
-    }
-
-    void IEntriable.Begin()
-    {
-        if (!Directory.Exists(ConfigEntry.Instance.LinksPath))
-            Directory.CreateDirectory(ConfigEntry.Instance.LinksPath);
-        UpdateImages();
     }
 }
 

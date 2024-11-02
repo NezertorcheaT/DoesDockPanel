@@ -2,32 +2,33 @@ using System.Diagnostics;
 using CustomHelper;
 using UnityEngine;
 using UnityEngine.Rendering;
+using VContainer;
 using Object = UnityEngine.Object;
 
 namespace UI
 {
-    public class BarImages : MonoBehaviour, IEntriable
+    public class BarImages : MonoBehaviour
     {
-        [SerializeField] private DockLinks dockLinks;
+        [Inject] private DockLinks _dockLinks;
         [SerializeField] private Transform container;
         [SerializeField] private LinkUI linkPrefab;
         [SerializeField] private FolderUI folderPrefab;
 
         private void OnEnable()
         {
-            dockLinks.Links.ItemAdded += UpdateGUI;
-            dockLinks.Links.ItemRemoved += UpdateGUI;
+            _dockLinks.Links.ItemAdded += UpdateGUI;
+            _dockLinks.Links.ItemRemoved += UpdateGUI;
         }
 
         private void OnDisable()
         {
-            dockLinks.Links.ItemAdded -= UpdateGUI;
-            dockLinks.Links.ItemRemoved -= UpdateGUI;
+            _dockLinks.Links.ItemAdded -= UpdateGUI;
+            _dockLinks.Links.ItemRemoved -= UpdateGUI;
         }
 
         public void Redraw()
         {
-            UpdateGUI(dockLinks.Links, null);
+            UpdateGUI(_dockLinks.Links, null);
         }
 
         private void UpdateGUI(ObservableList<DockLinks.FileObject> sender,
@@ -37,7 +38,7 @@ namespace UI
             Helper.FillContainerWithFiles(container, sender, linkPrefab, folderPrefab);
         }
 
-        public void Begin()
+        private void Start()
         {
             Redraw();
         }

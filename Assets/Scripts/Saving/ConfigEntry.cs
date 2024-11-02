@@ -1,18 +1,14 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using UnityEngine;
+using VContainer.Unity;
 
 namespace Saving
 {
-    public class ConfigEntry : MonoBehaviour, IEntriable
+    public class ConfigEntry : IStartable
     {
         public static Config Instance;
 
-        private void Start()
-        {
-        }
-
-        void IEntriable.Begin()
+        void IStartable.Start()
         {
             var configSaver = new ConfigFileSaver();
             var config = new Config(configSaver);
