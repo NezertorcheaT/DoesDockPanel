@@ -11,9 +11,9 @@ public class ApplicationLifetimeScope : LifetimeScope
 
     protected override void Configure(IContainerBuilder builder)
     {
-        builder.RegisterEntryPoint<ConfigEntry>();
-        builder.RegisterEntryPoint<TransparentWindow>();
-        builder.RegisterComponent(dockLinks);
-        builder.RegisterComponent(barImages);
+        builder.RegisterEntryPoint<ConfigEntry>().AsSelf();
+        builder.RegisterEntryPoint<TransparentWindow>().AsSelf();
+        builder.RegisterComponent(dockLinks).AsSelf();
+        builder.RegisterComponent(barImages).AsSelf();
     }
 }

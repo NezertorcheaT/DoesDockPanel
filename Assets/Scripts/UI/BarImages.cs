@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using CustomHelper;
+using Saving;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 using VContainer;
 using Object = UnityEngine.Object;
 
@@ -13,6 +15,7 @@ namespace UI
         [SerializeField] private Transform container;
         [SerializeField] private LinkUI linkPrefab;
         [SerializeField] private FolderUI folderPrefab;
+        private LayoutGroup _group;
 
         private void OnEnable()
         {
@@ -29,6 +32,9 @@ namespace UI
         public void Redraw()
         {
             UpdateGUI(_dockLinks.Links, null);
+            if (_group is null || _group.IsDestroyed())
+                _group = container.GetComponent<LayoutGroup>();
+            _group.childAlignment = ConfigEntry.Instance.TextAnchor;
         }
 
         private void UpdateGUI(ObservableList<DockLinks.FileObject> sender,

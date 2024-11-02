@@ -9,7 +9,7 @@ namespace UI
         IPointerDownHandler,
         IPointerUpHandler
     {
-        [SerializeField] private RectTransform transform;
+        [SerializeField] private new RectTransform transform;
         private Vector2 _offset;
         private bool _dragging;
 

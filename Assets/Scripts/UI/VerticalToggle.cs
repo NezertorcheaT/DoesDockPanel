@@ -2,47 +2,56 @@ using R3;
 using Saving;
 using UnityEngine;
 using UnityEngine.UI;
+using VContainer;
 
 namespace UI
 {
     public class VerticalToggle : ToggleUI
     {
-        [SerializeField] private LayoutGroup group;
+        [Inject] private BarImages _bar;
+        [SerializeField] private GameObject container;
+        private LayoutGroup _group;
 
         private void Start()
         {
             InitWithValue(ConfigEntry.Instance.IsVertical);
-            Toggling.Subscribe(args =>
+            Toggling.Subscribe(OnNext);
+            OnNext(new ToggleArgs(ConfigEntry.Instance.IsVertical));
+        }
+
+        private void OnNext(ToggleArgs args)
+        {
+            ConfigEntry.Instance.IsVertical = args.Value;
+            if (ReferenceEquals(_group, null) || _group.IsDestroyed())
+                _group = container.GetComponent<LayoutGroup>();
+
+            if (args.Value)
             {
-                ConfigEntry.Instance.IsVertical = args.Value;
-                var g = group.gameObject;
-                if (args.Value)
-                {
-                    if (group is VerticalLayoutGroup) return;
-                    DestroyImmediate(group);
-                    group = g.AddComponent<VerticalLayoutGroup>();
+                if (_group is VerticalLayoutGroup) return;
+                DestroyImmediate(_group);
+                _group = container.AddComponent<VerticalLayoutGroup>();
 
-                    var layoutGroup = (VerticalLayoutGroup)group;
-                    layoutGroup.childForceExpandWidth = args.Value;
-                    layoutGroup.childForceExpandHeight = !args.Value;
-                    layoutGroup.childControlHeight = false;
-                    layoutGroup.childControlWidth = false;
-                }
-                else
-                {
-                    if (group is HorizontalLayoutGroup) return;
-                    DestroyImmediate(group);
-                    group = g.AddComponent<HorizontalLayoutGroup>();
+                var layoutGroup = (VerticalLayoutGroup)_group;
+                layoutGroup.childForceExpandWidth = args.Value;
+                layoutGroup.childForceExpandHeight = !args.Value;
+                layoutGroup.childControlHeight = false;
+                layoutGroup.childControlWidth = false;
+            }
+            else
+            {
+                if (_group is HorizontalLayoutGroup) return;
+                DestroyImmediate(_group);
+                _group = container.AddComponent<HorizontalLayoutGroup>();
 
-                    var layoutGroup = (HorizontalLayoutGroup)group;
-                    layoutGroup.childForceExpandWidth = args.Value;
-                    layoutGroup.childForceExpandHeight = !args.Value;
-                    layoutGroup.childControlHeight = false;
-                    layoutGroup.childControlWidth = false;
-                }
+                var layoutGroup = (HorizontalLayoutGroup)_group;
+                layoutGroup.childForceExpandWidth = args.Value;
+                layoutGroup.childForceExpandHeight = !args.Value;
+                layoutGroup.childControlHeight = false;
+                layoutGroup.childControlWidth = false;
+            }
 
-                group.childAlignment = ConfigEntry.Instance.TextAnchor;
-            });
+            _group.childAlignment = ConfigEntry.Instance.TextAnchor;
+            _bar?.Redraw();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace UI
 {
     public class AnchoringButtonsUI : MonoBehaviour
     {
-        [SerializeField] private GameObject group;
+        [SerializeField] private GameObject container;
         [SerializeField] private Button Up;
         [SerializeField] private Button Down;
         [SerializeField] private Button Right;
@@ -38,8 +38,8 @@ namespace UI
 
         private void Start()
         {
-            if (_group is null || _group.IsDestroyed())
-                _group = group.GetComponent<LayoutGroup>();
+            if (ReferenceEquals(_group, null) || _group.IsDestroyed())
+                _group = container.GetComponent<LayoutGroup>();
             _group.childAlignment = ConfigEntry.Instance.TextAnchor;
         }
 
@@ -48,7 +48,7 @@ namespace UI
             button.onClick.AsObservable().Subscribe(_ =>
             {
                 if (_group is null || _group.IsDestroyed())
-                    _group = group.GetComponent<LayoutGroup>();
+                    _group = container.GetComponent<LayoutGroup>();
                 _group.childAlignment = anchor;
                 ConfigEntry.Instance.TextAnchor = anchor;
             }).AddTo(ref builder);
