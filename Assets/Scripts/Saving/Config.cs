@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Saving.Converters;
@@ -14,15 +15,19 @@ namespace Saving
     {
         public string LinksPath
         {
-            get => _linksPath;
+            get => _linksPath
+                .Replace('/', Path.DirectorySeparatorChar)
+                .Replace('\\', Path.DirectorySeparatorChar);
             set
             {
-                _linksPath = value;
+                _linksPath = value
+                    .Replace('/', Path.DirectorySeparatorChar)
+                    .Replace('\\', Path.DirectorySeparatorChar);
                 _saver.Save(this);
             }
         }
 
-        private string _linksPath = $"{GlobalFileSaver.Path}/Links";
+        private string _linksPath = $"{GlobalFileSaver.Path}{Path.DirectorySeparatorChar}Links";
 
         public Vector3 SettingsPosition
         {
@@ -125,11 +130,25 @@ namespace Saving
 
         public IFileSaver<string>.ISavable Deconvert(string converted, IFileSaver<string> saver)
         {
-            var deserialized = JsonSerializer.Deserialize<Config>(converted, SerializerOptions);
-            if (deserialized is null)
-                throw new ArgumentException($"Converted string '{converted}' is not Config and can't be deserialized");
-            deserialized._saver = saver;
-            return deserialized;
+            try
+            {
+                var deserialized = JsonSerializer.Deserialize<Config>(converted, SerializerOptions);
+                if (deserialized is null)
+                    throw new ArgumentException(
+                        $"Converted string '{converted}' is not Config and can't be deserialized");
+                deserialized._saver = saver;
+                return deserialized;
+            }
+            catch
+            {
+                var config = new Config(
+                    $"{GlobalFileSaver.Path}{Path.DirectorySeparatorChar}Links",
+                    new Vector3(722, 86)
+                );
+                config._saver = saver;
+                config._saver.Save(config);
+                return config;
+            }
         }
     }
 
