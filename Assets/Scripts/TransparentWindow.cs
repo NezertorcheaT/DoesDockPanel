@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.EventSystems;
-#if !UNITY_EDITOR
 using UnityEngine.InputSystem;
-#endif
 using VContainer.Unity;
 
+[UsedImplicitly]
 public class TransparentWindow : IStartable, ITickable
 {
-    [DllImport("user32.dll")]
-    private static extern IntPtr GetActiveWindow();
-
     [DllImport("user32.dll")]
     private static extern int SetWindowLong(IntPtr hWnd, int nIndex, uint dwNewLong);
 
@@ -31,22 +28,50 @@ public class TransparentWindow : IStartable, ITickable
     [DllImport("Dwmapi.dll")]
     private static extern uint DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS margins);
 
-    const int GWL_EXSTYLE = -20;
-    const uint WS_EX_LAYERED = 0x00080000;
-    const uint WS_EX_TRANSPARENT = 0x00000020;
-    const uint WS_EX_NOACTIVATE = 0x08000000;
-    static readonly IntPtr HWND_TOPMOST = new(1);
-    private IntPtr hWnd;
+    private const int GWL_EXSTYLE = -20;
+    private const uint WS_EX_LAYERED = 0x00080000;
+    private const uint WS_EX_TRANSPARENT = 0x00000020;
+    private const uint WS_EX_NOACTIVATE = 0x08000000;
+    private static readonly IntPtr HWND_BOTTOM = new(1);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr FindWindow(string className, string windowName);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr SetActiveWindow(IntPtr hWnd);
+
+    private static IntPtr _currentWindow = IntPtr.Zero;
+
+    private static IntPtr GetUnityWindow()
+    {
+        if (_currentWindow == IntPtr.Zero)
+            _currentWindow = FindWindow(null, Application.productName);
+        return _currentWindow;
+    }
 
     // ReSharper disable once UnusedMember.Local
     private void NotEditor()
     {
-        hWnd = GetActiveWindow();
-
+        GetUnityWindow();
         var margins = new MARGINS { cxLeftWidth = -1 };
-        DwmExtendFrameIntoClientArea(hWnd, ref margins);
-        SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_NOACTIVATE);
-        SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, 0);
+        SetWindowLong(_currentWindow, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_NOACTIVATE);
+        SetWindowPos(_currentWindow, HWND_BOTTOM, 0, 0, 0, 0, 0);
+        DwmExtendFrameIntoClientArea(_currentWindow, ref margins);
+        SetActiveWindow(_currentWindow);
+    }
+
+    private List<RaycastResult> _rl;
+
+    // ReSharper disable once UnusedMember.Local
+    private void NotEditorUpdate()
+    {
+        EventSystem.current.RaycastAll(
+            new PointerEventData(EventSystem.current) { position = Mouse.current.position.ReadValue() }, _rl);
+        SetWindowLong(_currentWindow, GWL_EXSTYLE,
+            _rl.Count <= 0
+                ? WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_NOACTIVATE
+                : WS_EX_LAYERED | WS_EX_NOACTIVATE
+        );
     }
 
     void IStartable.Start()
@@ -58,18 +83,10 @@ public class TransparentWindow : IStartable, ITickable
         Application.runInBackground = true;
     }
 
-    private List<RaycastResult> _rl;
-
     void ITickable.Tick()
     {
 #if !UNITY_EDITOR
-        EventSystem.current.RaycastAll(
-            new PointerEventData(EventSystem.current) { position = Mouse.current.position.ReadValue() }, _rl);
-        SetWindowLong(hWnd, GWL_EXSTYLE,
-            _rl.Count <= 0
-                ? WS_EX_LAYERED | WS_EX_NOACTIVATE | WS_EX_TRANSPARENT
-                : WS_EX_LAYERED | WS_EX_NOACTIVATE
-        );
+        NotEditorUpdate();
 #endif
     }
 }

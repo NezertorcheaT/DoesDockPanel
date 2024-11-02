@@ -3,6 +3,7 @@ using UI;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
+using PrimeTween;
 
 public class ApplicationLifetimeScope : LifetimeScope
 {
@@ -11,8 +12,9 @@ public class ApplicationLifetimeScope : LifetimeScope
 
     protected override void Configure(IContainerBuilder builder)
     {
-        builder.RegisterEntryPoint<ConfigEntry>().AsSelf();
-        builder.RegisterEntryPoint<TransparentWindow>().AsSelf();
+        PrimeTweenConfig.warnEndValueEqualsCurrent = false;
+        builder.RegisterEntryPoint<ConfigEntry>();
+        builder.RegisterEntryPoint<TransparentWindow>();
         builder.RegisterComponent(dockLinks).AsSelf();
         builder.RegisterComponent(barImages).AsSelf();
     }
