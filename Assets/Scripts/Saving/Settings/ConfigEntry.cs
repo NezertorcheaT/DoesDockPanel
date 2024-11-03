@@ -1,8 +1,7 @@
 ﻿using System.IO;
-using UnityEngine;
 using VContainer.Unity;
 
-namespace Saving
+namespace Saving.Settings
 {
     public class ConfigEntry : IStartable
     {

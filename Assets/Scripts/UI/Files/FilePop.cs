@@ -3,7 +3,7 @@ using R3;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace UI
+namespace UI.Files
 {
     public class FilePop : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

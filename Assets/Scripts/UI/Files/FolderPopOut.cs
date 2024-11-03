@@ -2,7 +2,7 @@ using PrimeTween;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace UI
+namespace UI.Files
 {
     public class FolderPopOut : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

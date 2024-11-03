@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 using Saving.Converters;
 using UnityEngine;
 
-namespace Saving
+namespace Saving.Settings
 {
     /// <summary>
     /// ну это типа настройки, они сделаны так, что если вы измените любое поле, оно автоматически сохранится на диске

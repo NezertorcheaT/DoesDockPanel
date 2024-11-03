@@ -1,4 +1,4 @@
-﻿namespace Saving
+﻿namespace Saving.Settings
 {
     public class ConfigFileSaver : IFileSaver<string>
     {

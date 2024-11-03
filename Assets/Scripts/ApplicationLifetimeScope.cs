@@ -4,6 +4,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 using PrimeTween;
+using Saving.Settings;
 
 public class ApplicationLifetimeScope : LifetimeScope
 {

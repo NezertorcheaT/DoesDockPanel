@@ -2,12 +2,13 @@ using System.Collections.Generic;
 using CustomHelper;
 using Files;
 using R3;
-using Saving;
+using Saving.Settings;
 using UI;
+using UI.Files;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-namespace UI
+namespace UI.Files
 {
     public class FolderUI : FileUI
     {

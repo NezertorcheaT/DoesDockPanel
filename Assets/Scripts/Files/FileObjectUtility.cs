@@ -1,12 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Files
 {
     public static class FileObjectUtility
     {
+        public static bool IsExcluded(string file) => file.StartsWith($"{FileObject.ExcludedStarting}.");
+
+        public static string NameAsExcluded(string file) => new StringBuilder()
+            .Append(file.Replace(Path.GetFileName(file), ""))
+            .Append(FileObject.ExcludedStarting)
+            .Append(".")
+            .Append(Path.GetFileName(file))
+            .ToString();
+
         public static async Task Populate(ICollection<FileObject> collection, string root)
         {
             collection.Dispose();
@@ -15,7 +25,8 @@ namespace Files
                 var (file, texture)
                 in await Task.WhenAll(Directory
                     .EnumerateFileSystemEntries(root, "**", new EnumerationOptions { IgnoreInaccessible = true })
-                    .Where(i => !i.EndsWith(AdvancedLink.Extension))
+                    .Where(i => !AdvancedLink.IsPathToConfig(i))
+                    .Where(i => !IsExcluded(i))
                     .Select(i => i
                         .Replace('/', Path.DirectorySeparatorChar)
                         .Replace('\\', Path.DirectorySeparatorChar)

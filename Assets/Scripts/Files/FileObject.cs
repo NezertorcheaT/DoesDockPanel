@@ -5,6 +5,8 @@ namespace Files
 {
     public abstract class FileObject : IDisposable, IEquatable<FileObject>
     {
+        public const string ExcludedStarting = "exclude";
+
         public FileObject(Texture2D image, string file)
         {
             Image = image;

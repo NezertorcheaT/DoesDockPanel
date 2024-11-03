@@ -1,4 +1,4 @@
-namespace UI
+namespace UI.Files
 {
     public class LinkUI : FileUI
     {

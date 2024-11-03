@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace UI.Files
 {
     public abstract class FileUI : MonoBehaviour
     {

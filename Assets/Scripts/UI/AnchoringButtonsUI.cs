@@ -1,6 +1,7 @@
 using System;
 using R3;
 using Saving;
+using Saving.Settings;
 using UnityEngine;
 using UnityEngine.UI;
 
