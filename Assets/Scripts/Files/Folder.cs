@@ -8,10 +8,8 @@ namespace Files
     {
         public readonly ObservableList<FileObject> Links;
 
-        public Folder(Texture2D image, string file)
+        public Folder(Texture2D image, string file) : base(image, file)
         {
-            Image = image;
-            File = file;
             Links = new ObservableList<FileObject>();
         }
 

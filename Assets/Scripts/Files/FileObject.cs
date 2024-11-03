@@ -5,6 +5,12 @@ namespace Files
 {
     public abstract class FileObject : IDisposable, IEquatable<FileObject>
     {
+        public FileObject(Texture2D image, string file)
+        {
+            Image = image;
+            File = file;
+        }
+
         public bool Equals(FileObject other)
         {
             if (other is null) return false;

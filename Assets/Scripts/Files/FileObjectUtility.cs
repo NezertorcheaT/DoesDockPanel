@@ -15,6 +15,7 @@ namespace Files
                 var (file, texture)
                 in await Task.WhenAll(Directory
                     .EnumerateFileSystemEntries(root, "**", new EnumerationOptions { IgnoreInaccessible = true })
+                    .Where(i => !i.EndsWith(AdvancedLink.Extension))
                     .Select(i => i
                         .Replace('/', Path.DirectorySeparatorChar)
                         .Replace('\\', Path.DirectorySeparatorChar)
@@ -28,14 +29,16 @@ namespace Files
                 )
             )
             {
-                if (!Directory.Exists(file))
-                    collection.Add(new Link(texture, file));
-                else
+                if (Directory.Exists(file))
                 {
                     var folder = new Folder(texture, file);
                     await folder.UpdateLinks();
                     collection.Add(folder);
                 }
+                else if (AdvancedLink.IsLinkAdvanced(file))
+                    collection.Add(new AdvancedLink(texture, file));
+                else
+                    collection.Add(new Link(texture, file));
             }
         }
 
