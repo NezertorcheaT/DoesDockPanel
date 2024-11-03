@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using CustomHelper;
+using Files;
 using Saving;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -37,8 +38,8 @@ namespace UI
             _group.childAlignment = ConfigEntry.Instance.TextAnchor;
         }
 
-        private void UpdateGUI(ObservableList<DockLinks.FileObject> sender,
-            ListChangedEventArgs<DockLinks.FileObject> listChangedEventArgs)
+        private void UpdateGUI(ObservableList<FileObject> sender,
+            ListChangedEventArgs<FileObject> listChangedEventArgs)
         {
             container.ClearKids();
             Helper.FillContainerWithFiles(container, sender, linkPrefab, folderPrefab);

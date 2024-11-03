@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Linq;
 using CustomHelper;
+using Files;
 using R3;
 using Saving;
 using UI;
@@ -11,7 +11,7 @@ namespace UI
 {
     public class FolderUI : FileUI
     {
-        public DockLinks.Folder CurrentFolder => CurrentFile as DockLinks.Folder;
+        public Folder CurrentFolder => CurrentFile as Folder;
         public IEnumerable<FileUI> InnerUIs => _innerUIs;
 
         [SerializeField] private Texture2D folderTexture;
@@ -24,9 +24,9 @@ namespace UI
         private List<FileUI> _innerUIs = new();
         private bool _insideFolder;
 
-        public void Initialize(DockLinks.Folder folder, bool insideFolder = false)
+        public void Initialize(Folder folder, bool insideFolder = false)
         {
-            Initialize(folder as DockLinks.FileObject);
+            Initialize(folder as FileObject);
             _insideFolder = insideFolder;
             Image = folderTexture;
             UpdateGUI(CurrentFolder.Links, null);
@@ -46,8 +46,8 @@ namespace UI
             CurrentFolder.Links.ItemRemoved -= UpdateGUI;
         }
 
-        private void UpdateGUI(ObservableList<DockLinks.FileObject> sender,
-            ListChangedEventArgs<DockLinks.FileObject> listChangedEventArgs)
+        private void UpdateGUI(ObservableList<FileObject> sender,
+            ListChangedEventArgs<FileObject> listChangedEventArgs)
         {
             containerR.ClearKids();
             containerL.ClearKids();
@@ -85,7 +85,7 @@ namespace CustomHelper
     {
         public static void FillContainerWithFiles(
             Transform container,
-            IEnumerable<DockLinks.FileObject> files,
+            IEnumerable<FileObject> files,
             LinkUI linkPrefab,
             FolderUI folderPrefab,
             bool insideFolder = true
@@ -98,7 +98,7 @@ namespace CustomHelper
 
         public static IEnumerable<FileUI> GetFilesForContainer(
             Transform container,
-            IEnumerable<DockLinks.FileObject> files,
+            IEnumerable<FileObject> files,
             LinkUI linkPrefab,
             FolderUI folderPrefab,
             bool insideFolder = true
@@ -107,14 +107,14 @@ namespace CustomHelper
             foreach (var file in files)
             {
                 FileUI i = null;
-                if (file is DockLinks.Link link)
+                if (file is Link link)
                 {
                     i = Object.Instantiate(linkPrefab, Vector3.zero, Quaternion.identity, container);
                     i.Initialize(link);
                     i.Click.Subscribe(l => OpenWithDefaultProgram(l.File));
                 }
 
-                if (file is DockLinks.Folder folder)
+                if (file is Folder folder)
                 {
                     var folderUI = Object.Instantiate(folderPrefab, Vector3.zero, Quaternion.identity, container);
                     folderUI.Initialize(folder, !insideFolder);

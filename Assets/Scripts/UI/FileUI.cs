@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Files;
 using R3;
 using TMPro;
 using UnityEngine;
@@ -11,8 +12,8 @@ namespace UI
         [SerializeField] private Button button;
         [SerializeField] private TextMeshProUGUI textContainer;
         [SerializeField] private RawImage image;
-        public Observable<DockLinks.FileObject> Click { get; private set; }
-        public DockLinks.FileObject CurrentFile;
+        public Observable<FileObject> Click { get; private set; }
+        public FileObject CurrentFile;
         private bool _initialized;
 
         private void Awake()
@@ -32,7 +33,7 @@ namespace UI
             set => image.texture = value;
         }
 
-        public void Initialize(DockLinks.FileObject file)
+        public void Initialize(FileObject file)
         {
             if (_initialized)
                 return;
