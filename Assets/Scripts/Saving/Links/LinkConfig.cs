@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Files;
@@ -10,34 +9,58 @@ namespace Saving.Links
     [Serializable]
     public class LinkConfig : IFileSaver<string>.ISavable
     {
-        public string LinksPath
+        public string ClickAction
         {
-            get => _linksPath
-                .Replace('/', Path.DirectorySeparatorChar)
-                .Replace('\\', Path.DirectorySeparatorChar);
+            get => _clickAction;
             set
             {
-                _linksPath = value
-                    .Replace('/', Path.DirectorySeparatorChar)
-                    .Replace('\\', Path.DirectorySeparatorChar);
+                _clickAction = value;
                 _saver.Save(this);
             }
         }
 
-        private string _linksPath = $"{GlobalFileSaver.Path}{Path.DirectorySeparatorChar}Links";
+        private string _clickAction = "";
+
+        public string DoubleClickAction
+        {
+            get => _doubleClickAction;
+            set
+            {
+                _doubleClickAction = value;
+                _saver.Save(this);
+            }
+        }
+
+        private string _doubleClickAction = "";
+
+        public string RightClickAction
+        {
+            get => _rightClickAction;
+            set
+            {
+                _rightClickAction = value;
+                _saver.Save(this);
+            }
+        }
+
+        private string _rightClickAction = "";
 
         private IFileSaver<string> _saver;
-        public AdvancedLink AssociatedLink { get;  }
+        [JsonIgnore] public AdvancedLink AssociatedLink { get; private set; }
 
         [JsonConstructor]
         private LinkConfig(
-            string linksPath
+            string clickAction = "",
+            string doubleClickAction = "",
+            string rightClickAction = ""
         )
         {
-            _linksPath = linksPath;
+            _clickAction = clickAction;
+            _doubleClickAction = doubleClickAction;
+            _rightClickAction = rightClickAction;
         }
 
-        public LinkConfig(LinkConfigFileSaver saver,AdvancedLink link)
+        public LinkConfig(IFileSaver<string> saver, AdvancedLink link)
         {
             _saver = saver;
             AssociatedLink = link;
@@ -55,14 +78,12 @@ namespace Saving.Links
                     throw new ArgumentException(
                         $"Converted string '{converted}' is not LinkConfig and can't be deserialized");
                 deserialized._saver = saver;
+                deserialized.AssociatedLink = AssociatedLink;
                 return deserialized;
             }
             catch
             {
-                var config = new LinkConfig(
-                    $"{GlobalFileSaver.Path}{Path.DirectorySeparatorChar}Links"
-                );
-                config._saver = saver;
+                var config = new LinkConfig(saver, AssociatedLink);
                 config._saver.Save(config);
                 return config;
             }

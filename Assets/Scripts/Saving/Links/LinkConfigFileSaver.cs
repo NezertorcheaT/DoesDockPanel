@@ -15,7 +15,7 @@ namespace Saving.Links
 
         public string Read(string path)
         {
-            if (AdvancedLink.IsPathToConfig(path))
+            if (!AdvancedLink.IsPathToConfig(path))
                 Debug.LogWarning($"File '{path}' probably not a {nameof(LinkConfig)}, be careful");
             return GlobalFileSaver.ReadFromDrive(path);
         }

@@ -7,7 +7,7 @@ namespace Files
     {
         public const string ConfigExtension = "conf";
         public string ConfigPath => $"{File}.{ConfigExtension}";
-        private LinkConfig Config { get; }
+        public LinkConfig Config { get; }
 
         public AdvancedLink(Texture2D image, string file) : base(image, file)
         {
@@ -19,6 +19,7 @@ namespace Files
             }
 
             Config = new LinkConfig(saver, this);
+            Config = Config.Deconvert(saver.Read(ConfigPath), saver) as LinkConfig;
         }
 
         public static bool IsLinkAdvanced(string file) => System.IO.File.Exists($"{file}.{ConfigExtension}");

@@ -12,14 +12,15 @@ namespace UI.Files
         [SerializeField] private Button button;
         [SerializeField] private TextMeshProUGUI textContainer;
         [SerializeField] private RawImage image;
+
         public Observable<FileObject> Click { get; private set; }
+        public Observable<FileObject> DoubleClick { get; private set; }
+        public Observable<FileObject> RightClick { get; private set; }
+
+        public const float DoubleClickMaxDelay = 0.2f;
+
         public FileObject CurrentFile;
         private bool _initialized;
-
-        private void Awake()
-        {
-            Click = button.onClick.AsObservable().Select(_ => CurrentFile);
-        }
 
         public string FileName
         {
@@ -37,6 +38,18 @@ namespace UI.Files
         {
             if (_initialized)
                 return;
+
+            Click = button.onClick
+                .AsObservable()
+                .TimeInterval()
+                .Where(tuple => tuple.Interval.Seconds > DoubleClickMaxDelay)
+                .Select(_ => CurrentFile);
+            DoubleClick = button.onClick
+                .AsObservable()
+                .TimeInterval()
+                .Where(tuple => tuple.Interval.Seconds <= DoubleClickMaxDelay)
+                .Select(_ => CurrentFile);
+
             CurrentFile = file;
             Image = CurrentFile.Image;
             FileName = Path.GetFileNameWithoutExtension(CurrentFile.File);

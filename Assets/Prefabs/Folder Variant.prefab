@@ -427,6 +427,7 @@ MonoBehaviour:
   folderTexture: {fileID: 2800000, guid: cb1cb9d7e302d2943bbd81270040a93d, type: 3}
   linkPrefab: {fileID: 8544601783074920237, guid: 47d37ba12c926b9478e26fcf48add095, type: 3}
   folderPrefab: {fileID: 5649418360107761898, guid: f9d3ad496b8a2254697b8b08902ae9ae, type: 3}
+  advancedLinkPrefab: {fileID: -9058938203796545780, guid: 6f5ccb5a2c1d65a489aee0669fa662d6, type: 3}
   containerR: {fileID: 5712444303676020271}
   containerL: {fileID: 513301966466366932}
   containerU: {fileID: 2147069199172305556}

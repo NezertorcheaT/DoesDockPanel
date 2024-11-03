@@ -17,6 +17,7 @@ namespace UI
         [SerializeField] private Transform container;
         [SerializeField] private LinkUI linkPrefab;
         [SerializeField] private FolderUI folderPrefab;
+        [SerializeField] private AdvancedLinkUI advancedLinkPrefab;
         private LayoutGroup _group;
 
         private void OnEnable()
@@ -43,7 +44,7 @@ namespace UI
             ListChangedEventArgs<FileObject> listChangedEventArgs)
         {
             container.ClearKids();
-            Helper.FillContainerWithFiles(container, sender, linkPrefab, folderPrefab);
+            Helper.FillContainerWithFiles(container, sender, linkPrefab, folderPrefab, advancedLinkPrefab);
         }
 
         private void Start()

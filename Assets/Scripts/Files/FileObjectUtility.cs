@@ -3,12 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Files
 {
     public static class FileObjectUtility
     {
-        public static bool IsExcluded(string file) => file.StartsWith($"{FileObject.ExcludedStarting}.");
+        public static bool IsExcluded(string file) =>
+            Path.GetFileName(file).StartsWith($"{FileObject.ExcludedStarting}.");
 
         public static string NameAsExcluded(string file) => new StringBuilder()
             .Append(file.Replace(Path.GetFileName(file), ""))

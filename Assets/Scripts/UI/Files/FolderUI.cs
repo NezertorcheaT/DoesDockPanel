@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using CustomHelper;
 using Files;
-using R3;
 using Saving.Settings;
-using UI;
-using UI.Files;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -18,6 +15,7 @@ namespace UI.Files
         [SerializeField] private Texture2D folderTexture;
         [SerializeField] private LinkUI linkPrefab;
         [SerializeField] private FolderUI folderPrefab;
+        [SerializeField] private AdvancedLinkUI advancedLinkPrefab;
         [SerializeField] private Transform containerR;
         [SerializeField] private Transform containerL;
         [SerializeField] private Transform containerU;
@@ -75,55 +73,14 @@ namespace UI.Files
                 _ => containerD
             };
             _innerUIs.Clear();
-            _innerUIs.AddRange(Helper.GetFilesForContainer(container, sender, linkPrefab, folderPrefab, _insideFolder));
-        }
-    }
-}
-
-namespace CustomHelper
-{
-    public static partial class Helper
-    {
-        public static void FillContainerWithFiles(
-            Transform container,
-            IEnumerable<FileObject> files,
-            LinkUI linkPrefab,
-            FolderUI folderPrefab,
-            bool insideFolder = true
-        )
-        {
-            foreach (var _ in GetFilesForContainer(container, files, linkPrefab, folderPrefab, insideFolder))
-            {
-            }
-        }
-
-        public static IEnumerable<FileUI> GetFilesForContainer(
-            Transform container,
-            IEnumerable<FileObject> files,
-            LinkUI linkPrefab,
-            FolderUI folderPrefab,
-            bool insideFolder = true
-        )
-        {
-            foreach (var file in files)
-            {
-                FileUI i = null;
-                if (file is Link link)
-                {
-                    i = Object.Instantiate(linkPrefab, Vector3.zero, Quaternion.identity, container);
-                    i.Initialize(link);
-                    i.Click.Subscribe(l => OpenWithDefaultProgram(l.File));
-                }
-
-                if (file is Folder folder)
-                {
-                    var folderUI = Object.Instantiate(folderPrefab, Vector3.zero, Quaternion.identity, container);
-                    folderUI.Initialize(folder, !insideFolder);
-                    i = folderUI;
-                }
-
-                yield return i;
-            }
+            _innerUIs.AddRange(Helper.GetFilesForContainer(
+                container,
+                sender,
+                linkPrefab,
+                folderPrefab,
+                advancedLinkPrefab,
+                _insideFolder)
+            );
         }
     }
 }
