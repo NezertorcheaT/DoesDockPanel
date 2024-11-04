@@ -7,7 +7,6 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using VContainer;
-using Object = UnityEngine.Object;
 
 namespace UI
 {
@@ -70,6 +69,7 @@ namespace CustomHelper
 
         public static void OpenWithDefaultProgram(string file)
         {
+            if (string.IsNullOrWhiteSpace(file)) return;
             using var filerOpener = new Process();
 
             filerOpener.StartInfo.FileName = "explorer";

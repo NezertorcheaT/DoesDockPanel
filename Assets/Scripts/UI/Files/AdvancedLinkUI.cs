@@ -11,9 +11,9 @@ namespace UI.Files
         public void Initialize(AdvancedLink link)
         {
             Initialize(link as FileObject);
-            Click.Subscribe(_ => Helper.OpenWithDefaultProgram(CurrentLink.Config.ClickAction));
-            DoubleClick.Subscribe(_ => Helper.OpenWithDefaultProgram(CurrentLink.Config.DoubleClickAction));
-            //RightClick.Subscribe(_ => Helper.OpenWithDefaultProgram(CurrentLink.Config.RightClickAction));
+            LeftClick.Subscribe(_ => Helper.OpenWithDefaultProgram(CurrentLink.Config.LeftClickAction));
+            MiddleClick.Subscribe(_ => Helper.OpenWithDefaultProgram(CurrentLink.Config.MiddleClickAction));
+            RightClick.Subscribe(_ => Helper.OpenWithDefaultProgram(CurrentLink.Config.RightClickAction));
         }
     }
 }

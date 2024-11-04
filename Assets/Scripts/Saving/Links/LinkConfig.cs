@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Files;
@@ -9,36 +10,48 @@ namespace Saving.Links
     [Serializable]
     public class LinkConfig : IFileSaver<string>.ISavable
     {
-        public string ClickAction
+        public string LeftClickAction
         {
-            get => _clickAction;
+            get => _leftClickAction
+                .Replace('/', Path.DirectorySeparatorChar)
+                .Replace('\\', Path.DirectorySeparatorChar);
             set
             {
-                _clickAction = value;
+                _leftClickAction = value
+                    .Replace('/', Path.DirectorySeparatorChar)
+                    .Replace('\\', Path.DirectorySeparatorChar);
                 _saver.Save(this);
             }
         }
 
-        private string _clickAction = "";
+        private string _leftClickAction = "";
 
-        public string DoubleClickAction
+        public string MiddleClickAction
         {
-            get => _doubleClickAction;
+            get => _middleClickAction
+                .Replace('/', Path.DirectorySeparatorChar)
+                .Replace('\\', Path.DirectorySeparatorChar);
             set
             {
-                _doubleClickAction = value;
+                _middleClickAction = value
+                    .Replace('/', Path.DirectorySeparatorChar)
+                    .Replace('\\', Path.DirectorySeparatorChar);
                 _saver.Save(this);
             }
         }
 
-        private string _doubleClickAction = "";
+        private string _middleClickAction = "";
 
         public string RightClickAction
         {
-            get => _rightClickAction;
+            get => _rightClickAction
+                .Replace('/', Path.DirectorySeparatorChar)
+                .Replace('\\', Path.DirectorySeparatorChar);
             set
             {
-                _rightClickAction = value;
+                _rightClickAction = value
+                    .Replace('/', Path.DirectorySeparatorChar)
+                    .Replace('\\', Path.DirectorySeparatorChar);
                 _saver.Save(this);
             }
         }
@@ -50,13 +63,13 @@ namespace Saving.Links
 
         [JsonConstructor]
         private LinkConfig(
-            string clickAction = "",
-            string doubleClickAction = "",
+            string leftClickAction = "",
+            string middleClickAction = "",
             string rightClickAction = ""
         )
         {
-            _clickAction = clickAction;
-            _doubleClickAction = doubleClickAction;
+            _leftClickAction = leftClickAction;
+            _middleClickAction = middleClickAction;
             _rightClickAction = rightClickAction;
         }
 

@@ -11,7 +11,7 @@ namespace UI.Files
 
         private void Start()
         {
-            fileUI.Click.Subscribe(_ =>
+            fileUI.LeftClick.Subscribe(_ =>
                 Tween
                     .Scale(fileUI.transform, new TweenSettings<float>(1.2f, 0.1f, Ease.OutElastic))
                     .Chain(Tween.Scale(fileUI.transform, new TweenSettings<float>(1, 0.1f, Ease.InCubic)))

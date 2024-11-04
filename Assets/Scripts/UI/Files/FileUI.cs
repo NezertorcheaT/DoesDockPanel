@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Files;
 using R3;
 using TMPro;
@@ -9,15 +10,13 @@ namespace UI.Files
 {
     public abstract class FileUI : MonoBehaviour
     {
-        [SerializeField] private Button button;
+        [SerializeField] private MulticlickButton button;
         [SerializeField] private TextMeshProUGUI textContainer;
         [SerializeField] private RawImage image;
 
-        public Observable<FileObject> Click { get; private set; }
-        public Observable<FileObject> DoubleClick { get; private set; }
-        public Observable<FileObject> RightClick { get; private set; }
-
-        public const float DoubleClickMaxDelay = 0.2f;
+        public Observable<FileObject> LeftClick => button.LeftClick.Select(_ => CurrentFile);
+        public Observable<FileObject> MiddleClick => button.MiddleClick.Select(_ => CurrentFile);
+        public Observable<FileObject> RightClick => button.RightClick.Select(_ => CurrentFile);
 
         public FileObject CurrentFile;
         private bool _initialized;
@@ -38,17 +37,6 @@ namespace UI.Files
         {
             if (_initialized)
                 return;
-
-            Click = button.onClick
-                .AsObservable()
-                .TimeInterval()
-                .Where(tuple => tuple.Interval.Seconds > DoubleClickMaxDelay)
-                .Select(_ => CurrentFile);
-            DoubleClick = button.onClick
-                .AsObservable()
-                .TimeInterval()
-                .Where(tuple => tuple.Interval.Seconds <= DoubleClickMaxDelay)
-                .Select(_ => CurrentFile);
 
             CurrentFile = file;
             Image = CurrentFile.Image;

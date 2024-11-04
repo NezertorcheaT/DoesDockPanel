@@ -9,7 +9,7 @@ namespace UI.Files
         public void Initialize(Link link)
         {
             Initialize(link as FileObject);
-            Click.Subscribe(l => Helper.OpenWithDefaultProgram(l.File));
+            LeftClick.Subscribe(l => Helper.OpenWithDefaultProgram(l.File));
         }
     }
 }

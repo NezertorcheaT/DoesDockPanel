@@ -2463,7 +2463,7 @@ MonoBehaviour:
   container: {fileID: 1808608266}
   linkPrefab: {fileID: 8544601783074920237, guid: 47d37ba12c926b9478e26fcf48add095, type: 3}
   folderPrefab: {fileID: 7840457234489175652, guid: 3651c7a3d5ab60b4399529c49942e30d, type: 3}
-  advancedLinkPrefab: {fileID: -9058938203796545780, guid: 6f5ccb5a2c1d65a489aee0669fa662d6, type: 3}
+  advancedLinkPrefab: {fileID: 259434661554866521, guid: 9e82c1a955d26644fa2504a70f778102, type: 3}
 --- !u!1 &821822219
 GameObject:
   m_ObjectHideFlags: 0
