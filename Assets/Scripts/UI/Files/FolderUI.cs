@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.IO;
 using CustomHelper;
 using Files;
+using Saving.Links;
 using Saving.Settings;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -12,20 +14,31 @@ namespace UI.Files
         public Folder CurrentFolder => CurrentFile as Folder;
         public IEnumerable<FileUI> InnerUIs => _innerUIs;
 
+        public string ConfigFile => Path.Join(CurrentFolder.File,
+            $"{FileObject.ExcludedStarting}.folder.{AdvancedLink.ConfigExtension}");
+
+        public FolderConfig Config { get; private set; }
+
         [SerializeField] private Texture2D folderTexture;
         [SerializeField] private LinkUI linkPrefab;
         [SerializeField] private FolderUI folderPrefab;
         [SerializeField] private AdvancedLinkUI advancedLinkPrefab;
-        [SerializeField] private Transform containerR;
-        [SerializeField] private Transform containerL;
-        [SerializeField] private Transform containerU;
-        [SerializeField] private Transform containerD;
+        [SerializeField] private RectTransform containerR;
+        [SerializeField] private RectTransform containerL;
+        [SerializeField] private RectTransform containerU;
+        [SerializeField] private RectTransform containerD;
         private List<FileUI> _innerUIs = new();
         private bool _insideFolder;
 
         public void Initialize(Folder folder, bool insideFolder = false)
         {
             Initialize(folder as FileObject);
+
+            var saver = new FolderConfigFileSaver();
+            Config = new FolderConfig(saver, this);
+            if (File.Exists(ConfigFile))
+                Config = Config.Deconvert(saver.Read(ConfigFile), saver) as FolderConfig;
+
             _insideFolder = insideFolder;
             Image = folderTexture;
             UpdateGUI(CurrentFolder.Links, null);
@@ -72,6 +85,8 @@ namespace UI.Files
                 FolderSide.Left => containerL,
                 _ => containerD
             };
+            container.sizeDelta = new Vector2(Config.ContainerWidth, Config.ContainerHeight);
+            container.localPosition += (Vector3)Config.Offset;
             _innerUIs.Clear();
             _innerUIs.AddRange(Helper.GetFilesForContainer(
                 container,
