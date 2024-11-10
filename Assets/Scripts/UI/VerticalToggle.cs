@@ -1,5 +1,3 @@
-using R3;
-using Saving;
 using Saving.Settings;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,34 +5,34 @@ using VContainer;
 
 namespace UI
 {
-    public class VerticalToggle : ToggleUI
+    public class VerticalToggle : MonoBehaviour
     {
         [Inject] private BarImages _bar;
+        [SerializeField] private Toggle toggle;
         [SerializeField] private GameObject container;
         private LayoutGroup _group;
 
         private void Start()
         {
-            InitWithValue(ConfigEntry.Instance.IsVertical);
-            Toggling.Subscribe(OnNext);
-            OnNext(new ToggleArgs(ConfigEntry.Instance.IsVertical));
+            toggle.isOn = ConfigEntry.Instance.IsVertical;
+            toggle.onValueChanged.AddListener(OnNext);
         }
 
-        private void OnNext(ToggleArgs args)
+        private void OnNext(bool args)
         {
-            ConfigEntry.Instance.IsVertical = args.Value;
+            ConfigEntry.Instance.IsVertical = args;
             if (ReferenceEquals(_group, null) || _group.IsDestroyed())
                 _group = container.GetComponent<LayoutGroup>();
 
-            if (args.Value)
+            if (args)
             {
                 if (_group is VerticalLayoutGroup) return;
                 DestroyImmediate(_group);
                 _group = container.AddComponent<VerticalLayoutGroup>();
 
                 var layoutGroup = (VerticalLayoutGroup)_group;
-                layoutGroup.childForceExpandWidth = args.Value;
-                layoutGroup.childForceExpandHeight = !args.Value;
+                layoutGroup.childForceExpandWidth = true;
+                layoutGroup.childForceExpandHeight = false;
                 layoutGroup.childControlHeight = false;
                 layoutGroup.childControlWidth = false;
             }
@@ -45,8 +43,8 @@ namespace UI
                 _group = container.AddComponent<HorizontalLayoutGroup>();
 
                 var layoutGroup = (HorizontalLayoutGroup)_group;
-                layoutGroup.childForceExpandWidth = args.Value;
-                layoutGroup.childForceExpandHeight = !args.Value;
+                layoutGroup.childForceExpandWidth = false;
+                layoutGroup.childForceExpandHeight = true;
                 layoutGroup.childControlHeight = false;
                 layoutGroup.childControlWidth = false;
             }
