@@ -1,12 +1,21 @@
 ﻿using System.IO;
 using Files;
-using Saving;
+using R3;
 using Saving.Settings;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Rendering;
 
 public class DockLinks : MonoBehaviour
 {
+    [SerializeField] private UnityEvent updateStarted;
+    [SerializeField] private UnityEvent updateEnded;
+
+    public Observable<Unit> UpdateStarted => _updateStarted;
+    private readonly Subject<Unit> _updateStarted = new();
+    public Observable<Unit> UpdateEnded => _updateEnded;
+    private readonly Subject<Unit> _updateEnded = new();
+
     public readonly ObservableList<FileObject> Links = new();
 
     private void Start()
@@ -18,7 +27,11 @@ public class DockLinks : MonoBehaviour
 
     public async void UpdateImages()
     {
+        updateStarted.Invoke();
+        _updateStarted.OnNext(new Unit());
         await FileObjectUtility.Populate(Links, ConfigEntry.Instance.LinksPath);
+        updateEnded.Invoke();
+        _updateEnded.OnNext(new Unit());
     }
 
     private void OnDestroy()
