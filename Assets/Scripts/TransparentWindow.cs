@@ -53,6 +53,7 @@ public class TransparentWindow : IStartable, ITickable
     private void NotEditor()
     {
         GetUnityWindow();
+        SetActiveWindow(_currentWindow);
         var margins = new MARGINS { cxLeftWidth = -1 };
         SetWindowLong(_currentWindow, GWL_EXSTYLE, WS_EX_LAYERED | WS_EX_NOACTIVATE);
         SetWindowPos(_currentWindow, HWND_BOTTOM, 0, 0, 0, 0, 0);
