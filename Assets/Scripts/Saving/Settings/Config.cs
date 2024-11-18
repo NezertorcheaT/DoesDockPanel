@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Files;
 using Saving.Converters;
 using UnityEngine;
 
@@ -13,21 +14,17 @@ namespace Saving.Settings
     [Serializable]
     public class Config : IFileSaver<string>.ISavable
     {
-        public string LinksPath
+        public FilePath LinksPath
         {
-            get => _linksPath
-                .Replace('/', Path.DirectorySeparatorChar)
-                .Replace('\\', Path.DirectorySeparatorChar);
+            get => _linksPath;
             set
             {
-                _linksPath = value
-                    .Replace('/', Path.DirectorySeparatorChar)
-                    .Replace('\\', Path.DirectorySeparatorChar);
+                _linksPath = value;
                 _saver.Save(this);
             }
         }
 
-        private string _linksPath = $"{GlobalFileSaver.Path}{Path.DirectorySeparatorChar}Links";
+        private FilePath _linksPath = $"{GlobalFileSaver.Path}{Path.AltDirectorySeparatorChar}Links";
 
         public Vector3 SettingsPosition
         {
@@ -96,6 +93,7 @@ namespace Saving.Settings
             {
                 new Vector2Converter(),
                 new Vector3Converter(),
+                new FilePathConverter(),
             },
             WriteIndented = true,
         };
@@ -104,7 +102,7 @@ namespace Saving.Settings
 
         [JsonConstructor]
         private Config(
-            string linksPath,
+            FilePath linksPath,
             Vector3 settingsPosition,
             TextAnchor textAnchor = TextAnchor.UpperCenter,
             bool isVertical = true,
@@ -142,7 +140,7 @@ namespace Saving.Settings
             catch
             {
                 var config = new Config(
-                    $"{GlobalFileSaver.Path}{Path.DirectorySeparatorChar}Links",
+                    $"{GlobalFileSaver.Path}{Path.AltDirectorySeparatorChar}Links",
                     new Vector3(722, 86)
                 );
                 config._saver = saver;

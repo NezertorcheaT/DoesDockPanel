@@ -16,24 +16,24 @@ public static class FileThumbnail
 {
     public static readonly string ThumbnailSolution =
         Path.Combine(Application.dataPath.Replace("Assets", "Thumbnails"), "Thumbnails.csproj")
-            .Replace('/', Path.DirectorySeparatorChar)
-            .Replace('\\', Path.DirectorySeparatorChar);
+            .Replace('/', Path.AltDirectorySeparatorChar)
+            .Replace('\\', Path.AltDirectorySeparatorChar);
 #if UNITY_EDITOR
     public static readonly string BuildArtifacts =
         Path.Combine(Application.dataPath.Replace("Assets", "Build"), $"{Application.productName}_Data/Thumbnails")
-            .Replace('/', Path.DirectorySeparatorChar)
-            .Replace('\\', Path.DirectorySeparatorChar);
+            .Replace('/', Path.AltDirectorySeparatorChar)
+            .Replace('\\', Path.AltDirectorySeparatorChar);
 #else
     public static readonly string BuildArtifacts =
         Path.Combine(Application.dataPath.Replace("Assets", "Build"), "Thumbnails")
-            .Replace('/', Path.DirectorySeparatorChar)
-            .Replace('\\', Path.DirectorySeparatorChar);
+            .Replace('/', Path.AltDirectorySeparatorChar)
+            .Replace('\\', Path.AltDirectorySeparatorChar);
 #endif
 
     public static readonly string ThumbnailsExecutable =
         Path.Combine(BuildArtifacts, "bin/Thumbnails/debug/Thumbnails.exe")
-            .Replace('/', Path.DirectorySeparatorChar)
-            .Replace('\\', Path.DirectorySeparatorChar);
+            .Replace('/', Path.AltDirectorySeparatorChar)
+            .Replace('\\', Path.AltDirectorySeparatorChar);
 
 #if UNITY_EDITOR
     [MenuItem("File/Build Thumbnails", false, 3)]
@@ -65,8 +65,8 @@ public static class FileThumbnail
                 ),
                 "png"
             )
-            .Replace('/', Path.DirectorySeparatorChar)
-            .Replace('\\', Path.DirectorySeparatorChar);
+            .Replace('/', Path.AltDirectorySeparatorChar)
+            .Replace('\\', Path.AltDirectorySeparatorChar);
         try
         {
             using (var process = new Process())

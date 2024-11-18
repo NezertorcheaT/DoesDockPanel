@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO;
 using CustomHelper;
 using Files;
 using Saving.Settings;
@@ -66,14 +67,19 @@ namespace CustomHelper
             }
         }
 
-        public static void OpenWithDefaultProgram(string file)
+        public static void OpenWithDefaultProgram(FilePath file)
         {
-            if (string.IsNullOrWhiteSpace(file)) return;
+            if (file.IsEmpty) return;
             using var filerOpener = new Process();
 
             filerOpener.StartInfo.FileName = "explorer";
-            filerOpener.StartInfo.Arguments = file;
+            filerOpener.StartInfo.Arguments = file.Value
+                .Replace('/', Path.DirectorySeparatorChar)
+                .Replace('\\', Path.DirectorySeparatorChar);
             filerOpener.Start();
         }
+
+        public static void OpenWithDefaultProgram(string file) =>
+            OpenWithDefaultProgram(new FilePath(file));
     }
 }

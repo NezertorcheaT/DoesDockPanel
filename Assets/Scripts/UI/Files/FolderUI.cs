@@ -14,7 +14,7 @@ namespace UI.Files
         public Folder CurrentFolder => CurrentFile as Folder;
         public IEnumerable<FileUI> InnerUIs => _innerUIs;
 
-        public string ConfigFile => Path.Join(CurrentFolder.File,
+        public FilePath ConfigFile => Path.Join(CurrentFolder.File,
             $"{FileObject.ExcludedStarting}.folder.{LinkUI.ConfigExtension}");
 
         public FolderConfig Config { get; private set; }

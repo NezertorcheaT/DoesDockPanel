@@ -1,77 +1,66 @@
 ﻿using System;
-using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Files;
 using Saving.Settings;
 using UI.Files;
+using UnityEngine;
 
 namespace Saving.Links
 {
     [Serializable]
     public class LinkConfig : IFileSaver<string>.ISavable
     {
-        public string LeftClickAction
+        public FilePath LeftClickAction
         {
-            get => _leftClickAction
-                .Replace('/', Path.DirectorySeparatorChar)
-                .Replace('\\', Path.DirectorySeparatorChar);
+            get => _leftClickAction;
             set
             {
-                _leftClickAction = value
-                    .Replace('/', Path.DirectorySeparatorChar)
-                    .Replace('\\', Path.DirectorySeparatorChar);
+                _leftClickAction = value;
                 _saver.Save(this);
             }
         }
 
-        private string _leftClickAction = "";
+        private FilePath _leftClickAction = FilePath.Empty;
 
-        public string MiddleClickAction
+        public FilePath MiddleClickAction
         {
-            get => _middleClickAction
-                .Replace('/', Path.DirectorySeparatorChar)
-                .Replace('\\', Path.DirectorySeparatorChar);
+            get => _middleClickAction;
             set
             {
-                _middleClickAction = value
-                    .Replace('/', Path.DirectorySeparatorChar)
-                    .Replace('\\', Path.DirectorySeparatorChar);
+                _middleClickAction = value;
                 _saver.Save(this);
             }
         }
 
-        private string _middleClickAction = "";
+        private FilePath _middleClickAction = FilePath.Empty;
 
-        public string RightClickAction
+        public FilePath RightClickAction
         {
-            get => _rightClickAction
-                .Replace('/', Path.DirectorySeparatorChar)
-                .Replace('\\', Path.DirectorySeparatorChar);
+            get => _rightClickAction;
             set
             {
-                _rightClickAction = value
-                    .Replace('/', Path.DirectorySeparatorChar)
-                    .Replace('\\', Path.DirectorySeparatorChar);
+                _rightClickAction = value;
                 _saver.Save(this);
             }
         }
 
-        private string _rightClickAction = "";
+        private FilePath _rightClickAction = FilePath.Empty;
 
         private IFileSaver<string> _saver;
         [JsonIgnore] public LinkUI AssociatedLink { get; private set; }
 
         [JsonIgnore]
         public bool ActionEmpty =>
-            string.IsNullOrWhiteSpace(_leftClickAction) &&
-            string.IsNullOrWhiteSpace(_rightClickAction) &&
-            string.IsNullOrWhiteSpace(_middleClickAction);
+            LeftClickAction.IsEmpty &&
+            RightClickAction.IsEmpty &&
+            MiddleClickAction.IsEmpty;
 
         [JsonConstructor]
         private LinkConfig(
-            string leftClickAction = "",
-            string middleClickAction = "",
-            string rightClickAction = ""
+            FilePath leftClickAction,
+            FilePath middleClickAction,
+            FilePath rightClickAction
         )
         {
             _leftClickAction = leftClickAction;
@@ -104,8 +93,9 @@ namespace Saving.Links
                     deserialized._leftClickAction = AssociatedLink.CurrentFile.File;
                 return deserialized;
             }
-            catch
+            catch (Exception e)
             {
+                Debug.LogException(e);
                 var config = new LinkConfig(saver, AssociatedLink);
                 config._saver.Save(config);
                 return config;

@@ -9,7 +9,7 @@ namespace UI.Files
     public class LinkUI : FileUI
     {
         public const string ConfigExtension = "conf";
-        public string ConfigFile => $"{CurrentFile.File}.{ConfigExtension}";
+        public FilePath ConfigFile => $"{CurrentFile.File}.{ConfigExtension}";
         public LinkConfig Config { get; private set; }
 
         public void Initialize(Link link)

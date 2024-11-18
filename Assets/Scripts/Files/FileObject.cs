@@ -41,7 +41,7 @@ namespace Files
         }
 
         public Texture2D Image;
-        public string File;
+        public FilePath File;
         public override string ToString() => $"{base.ToString()} {{ File: {File}, Image: {Image} }}";
         public abstract void Dispose();
     }

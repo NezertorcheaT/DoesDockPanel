@@ -23,24 +23,21 @@ namespace Files
         {
             collection.Dispose();
 
-            foreach (
-                var (file, texture)
-                in await Task.WhenAll(Directory
-                    .EnumerateFileSystemEntries(root, "**", new EnumerationOptions { IgnoreInaccessible = true })
-                    .Where(i => !LinkUI.IsPathToConfig(i))
-                    .Where(i => !IsExcluded(i))
-                    .Select(i => i
-                        .Replace('/', Path.DirectorySeparatorChar)
-                        .Replace('\\', Path.DirectorySeparatorChar)
-                    )
-                    .OrderBy(i => !Directory.Exists(i))
-                    .ThenBy(i => i
-                        .Split(Path.DirectorySeparatorChar)
-                        .Last()
-                    )
-                    .Select(async i => (i, await FileThumbnail.GetThumbnail(i)))
+            var files = Directory
+                .EnumerateFileSystemEntries(root, "**", new EnumerationOptions { IgnoreInaccessible = true })
+                .Where(i => !LinkUI.IsPathToConfig(i))
+                .Where(i => !IsExcluded(i))
+                .Select(i => i
+                    .Replace('/', Path.AltDirectorySeparatorChar)
+                    .Replace('\\', Path.AltDirectorySeparatorChar)
                 )
-            )
+                .OrderBy(i => !Directory.Exists(i))
+                .ThenBy(i => i
+                    .Split(Path.AltDirectorySeparatorChar)
+                    .Last()
+                );
+
+            foreach (var (file, texture) in await Task.WhenAll(files.Select(async i => (i, await FileThumbnail.GetThumbnail(i)))))
             {
                 if (Directory.Exists(file))
                 {
