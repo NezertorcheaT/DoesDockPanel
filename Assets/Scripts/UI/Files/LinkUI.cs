@@ -19,9 +19,11 @@ namespace UI.Files
             var saver = new LinkConfigFileSaver();
             Config = new LinkConfig(saver, this);
             if (File.Exists(ConfigFile))
-                Config = Config.Deconvert(saver.Read(ConfigFile), saver) as LinkConfig;
+                Config = (LinkConfig)Config.Deconvert(saver.Read(ConfigFile), saver);
 
-            LeftClick.Subscribe(l => Helper.OpenWithDefaultProgram(l.File));
+            LeftClick.Subscribe(_ => Helper.OpenWithDefaultProgram(Config.LeftClickAction));
+            MiddleClick.Subscribe(_ => Helper.OpenWithDefaultProgram(Config.MiddleClickAction));
+            RightClick.Subscribe(_ => Helper.OpenWithDefaultProgram(Config.RightClickAction));
         }
 
         public static bool LinkHasConfig(string file) => File.Exists($"{file}.{ConfigExtension}");

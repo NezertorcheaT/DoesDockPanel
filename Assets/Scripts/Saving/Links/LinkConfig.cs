@@ -61,6 +61,12 @@ namespace Saving.Links
         private IFileSaver<string> _saver;
         [JsonIgnore] public LinkUI AssociatedLink { get; private set; }
 
+        [JsonIgnore]
+        public bool ActionEmpty =>
+            string.IsNullOrWhiteSpace(_leftClickAction) &&
+            string.IsNullOrWhiteSpace(_rightClickAction) &&
+            string.IsNullOrWhiteSpace(_middleClickAction);
+
         [JsonConstructor]
         private LinkConfig(
             string leftClickAction = "",
@@ -77,6 +83,8 @@ namespace Saving.Links
         {
             _saver = saver;
             AssociatedLink = link;
+            if (ActionEmpty)
+                _leftClickAction = AssociatedLink.CurrentFile.File;
         }
 
         string IFileSaver<string>.ISavable.Convert() =>
@@ -92,6 +100,8 @@ namespace Saving.Links
                         $"Converted string '{converted}' is not LinkConfig and can't be deserialized");
                 deserialized._saver = saver;
                 deserialized.AssociatedLink = AssociatedLink;
+                if (deserialized.ActionEmpty)
+                    deserialized._leftClickAction = AssociatedLink.CurrentFile.File;
                 return deserialized;
             }
             catch
