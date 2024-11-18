@@ -15,14 +15,13 @@ namespace UI.Files
         public IEnumerable<FileUI> InnerUIs => _innerUIs;
 
         public string ConfigFile => Path.Join(CurrentFolder.File,
-            $"{FileObject.ExcludedStarting}.folder.{AdvancedLink.ConfigExtension}");
+            $"{FileObject.ExcludedStarting}.folder.{LinkUI.ConfigExtension}");
 
         public FolderConfig Config { get; private set; }
 
         [SerializeField] private Texture2D folderTexture;
         [SerializeField] private LinkUI linkPrefab;
         [SerializeField] private FolderUI folderPrefab;
-        [SerializeField] private AdvancedLinkUI advancedLinkPrefab;
         [SerializeField] private RectTransform containerR;
         [SerializeField] private RectTransform containerL;
         [SerializeField] private RectTransform containerU;
@@ -93,7 +92,6 @@ namespace UI.Files
                 sender,
                 linkPrefab,
                 folderPrefab,
-                advancedLinkPrefab,
                 _insideFolder)
             );
         }

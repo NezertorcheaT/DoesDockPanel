@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityEngine;
+using UI.Files;
 
 namespace Files
 {
@@ -27,7 +27,7 @@ namespace Files
                 var (file, texture)
                 in await Task.WhenAll(Directory
                     .EnumerateFileSystemEntries(root, "**", new EnumerationOptions { IgnoreInaccessible = true })
-                    .Where(i => !AdvancedLink.IsPathToConfig(i))
+                    .Where(i => !LinkUI.IsPathToConfig(i))
                     .Where(i => !IsExcluded(i))
                     .Select(i => i
                         .Replace('/', Path.DirectorySeparatorChar)
@@ -47,11 +47,10 @@ namespace Files
                     var folder = new Folder(texture, file);
                     await folder.UpdateLinks();
                     collection.Add(folder);
+                    continue;
                 }
-                else if (AdvancedLink.IsLinkAdvanced(file))
-                    collection.Add(new AdvancedLink(texture, file));
-                else
-                    collection.Add(new Link(texture, file));
+
+                collection.Add(new Link(texture, file));
             }
         }
 

@@ -2,8 +2,8 @@
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Files;
 using Saving.Settings;
+using UI.Files;
 
 namespace Saving.Links
 {
@@ -59,7 +59,7 @@ namespace Saving.Links
         private string _rightClickAction = "";
 
         private IFileSaver<string> _saver;
-        [JsonIgnore] public AdvancedLink AssociatedLink { get; private set; }
+        [JsonIgnore] public LinkUI AssociatedLink { get; private set; }
 
         [JsonConstructor]
         private LinkConfig(
@@ -73,7 +73,7 @@ namespace Saving.Links
             _rightClickAction = rightClickAction;
         }
 
-        public LinkConfig(IFileSaver<string> saver, AdvancedLink link)
+        public LinkConfig(IFileSaver<string> saver, LinkUI link)
         {
             _saver = saver;
             AssociatedLink = link;

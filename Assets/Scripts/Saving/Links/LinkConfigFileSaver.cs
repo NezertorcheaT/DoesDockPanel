@@ -1,5 +1,5 @@
 ﻿using System;
-using Files;
+using UI.Files;
 using UnityEngine;
 
 namespace Saving.Links
@@ -10,12 +10,12 @@ namespace Saving.Links
         {
             if (savable is not LinkConfig linkConfig)
                 throw new ArgumentException($"Provided savable '{savable}' is not a {nameof(LinkConfig)}");
-            GlobalFileSaver.SaveToDrive(savable.Convert(), linkConfig.AssociatedLink.ConfigPath);
+            GlobalFileSaver.SaveToDrive(savable.Convert(), linkConfig.AssociatedLink.ConfigFile);
         }
 
         public string Read(string path)
         {
-            if (!AdvancedLink.IsPathToConfig(path))
+            if (!LinkUI.IsPathToConfig(path))
                 Debug.LogWarning($"File '{path}' probably not a {nameof(LinkConfig)}, be careful");
             return GlobalFileSaver.ReadFromDrive(path);
         }

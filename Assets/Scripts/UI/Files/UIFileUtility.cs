@@ -12,11 +12,10 @@ namespace CustomHelper
             IEnumerable<FileObject> files,
             LinkUI linkPrefab,
             FolderUI folderPrefab,
-            AdvancedLinkUI advancedLinkPrefab,
             bool insideFolder = true
         )
         {
-            foreach (var _ in GetFilesForContainer(container, files, linkPrefab, folderPrefab, advancedLinkPrefab,
+            foreach (var _ in GetFilesForContainer(container, files, linkPrefab, folderPrefab,
                          insideFolder))
             {
             }
@@ -27,7 +26,6 @@ namespace CustomHelper
             IEnumerable<FileObject> files,
             LinkUI linkPrefab,
             FolderUI folderPrefab,
-            AdvancedLinkUI advancedLinkPrefab,
             bool insideFolder = true
         )
         {
@@ -46,18 +44,6 @@ namespace CustomHelper
                     var folderUI = Object.Instantiate(folderPrefab, Vector3.zero, Quaternion.identity, container);
                     folderUI.Initialize(folder, !insideFolder);
                     i = folderUI;
-                }
-
-                if (file is AdvancedLink advancedLink)
-                {
-                    var advancedLinkUI = Object.Instantiate(
-                        advancedLinkPrefab,
-                        Vector3.zero,
-                        Quaternion.identity,
-                        container
-                    );
-                    advancedLinkUI.Initialize(advancedLink);
-                    i = advancedLinkUI;
                 }
 
                 yield return i;
