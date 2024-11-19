@@ -3276,7 +3276,6 @@ MonoBehaviour:
   container: {fileID: 1808608266}
   linkPrefab: {fileID: 8544601783074920237, guid: 47d37ba12c926b9478e26fcf48add095, type: 3}
   folderPrefab: {fileID: 7840457234489175652, guid: 3651c7a3d5ab60b4399529c49942e30d, type: 3}
-  advancedLinkPrefab: {fileID: 259434661554866521, guid: 9e82c1a955d26644fa2504a70f778102, type: 3}
 --- !u!1 &825717920
 GameObject:
   m_ObjectHideFlags: 0
@@ -5924,6 +5923,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1808608266}
+  - component: {fileID: 1808608268}
   - component: {fileID: 1808608267}
   m_Layer: 5
   m_Name: Container
@@ -5978,6 +5978,14 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!222 &1808608268
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1808608265}
+  m_CullTransparentMesh: 1
 --- !u!1 &1888142220
 GameObject:
   m_ObjectHideFlags: 0

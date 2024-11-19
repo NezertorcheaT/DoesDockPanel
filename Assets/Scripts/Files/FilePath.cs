@@ -44,10 +44,11 @@ namespace Files
 
         public static FilePath Empty => new("") { IsEmpty = true };
 
-        public static implicit operator string(FilePath path) => path.Value;
+        public static implicit operator string(FilePath path) => path is null ? "" : path.Value;
 
         public static implicit operator FilePath(string path)
         {
+            if (path is null) return Empty;
             path = path
                 .Replace('/', Path.AltDirectorySeparatorChar)
                 .Replace('\\', Path.AltDirectorySeparatorChar);

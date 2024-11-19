@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using CustomHelper;
@@ -6,11 +7,15 @@ using Saving.Links;
 using Saving.Settings;
 using UnityEngine;
 using UnityEngine.Rendering;
+using VContainer;
 
 namespace UI.Files
 {
     public class FolderUI : FileUI
     {
+        [Inject] private Func<FolderUI, Transform, Folder, bool, FolderUI> _folderFactory;
+        [Inject] private Func<LinkUI, Transform, Link, LinkUI> _linkFactory;
+
         public Folder CurrentFolder => CurrentFile as Folder;
         public IEnumerable<FileUI> InnerUIs => _innerUIs;
 
@@ -92,7 +97,9 @@ namespace UI.Files
                 sender,
                 linkPrefab,
                 folderPrefab,
-                _insideFolder)
+                _folderFactory,
+                _linkFactory,
+                !_insideFolder)
             );
         }
     }

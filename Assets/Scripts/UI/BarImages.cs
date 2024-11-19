@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using CustomHelper;
@@ -8,11 +9,14 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using VContainer;
+using Object = UnityEngine.Object;
 
 namespace UI
 {
     public class BarImages : MonoBehaviour
     {
+        [Inject] private Func<FolderUI, Transform, Folder, bool, FolderUI> _folderFactory;
+        [Inject] private Func<LinkUI, Transform, Link, LinkUI> _linkFactory;
         [Inject] private DockLinks _dockLinks;
         [SerializeField] private Transform container;
         [SerializeField] private LinkUI linkPrefab;
@@ -43,7 +47,7 @@ namespace UI
             ListChangedEventArgs<FileObject> listChangedEventArgs)
         {
             container.ClearKids();
-            Helper.FillContainerWithFiles(container, sender, linkPrefab, folderPrefab);
+            Helper.FillContainerWithFiles(container, sender, linkPrefab, folderPrefab, _folderFactory, _linkFactory);
         }
 
         private void Start()
