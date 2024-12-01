@@ -6,9 +6,10 @@ using Saving.Links;
 
 namespace UI.Files
 {
-    public class LinkUI : FileUI
+    public class LinkUI : FileUI, IConfigurableFileUI<LinkConfig>
     {
         public const string ConfigExtension = "conf";
+        public FileUI Instance => this;
         public FilePath ConfigFile => $"{CurrentFile.File}.{ConfigExtension}";
         public LinkConfig Config { get; private set; }
 

@@ -11,11 +11,26 @@ using VContainer;
 
 namespace UI.Files
 {
-    public class FolderUI : FileUI
+    public interface IConfigurableFileUI<out T>
     {
-        [Inject] private Func<FolderUI, Transform, Folder, bool, FolderUI> _folderFactory;
+        T Config { get; }
+        FilePath ConfigFile { get; }
+        FileUI Instance { get; }
+    }
+
+    public interface IFolderUI
+    {
+        public GameObject ContainedIn { get; }
+        public void Initialize(Folder folder, bool insideFolder = false);
+    }
+
+    public class FolderUI : FileUI, IConfigurableFileUI<FolderConfig>, IFolderUI
+    {
+        [Inject] private Func<IFolderUI, Transform, Folder, bool, IFolderUI> _folderFactory;
         [Inject] private Func<LinkUI, Transform, Link, LinkUI> _linkFactory;
 
+        public FileUI Instance => this;
+        public GameObject ContainedIn => gameObject;
         public Folder CurrentFolder => CurrentFile as Folder;
         public IEnumerable<FileUI> InnerUIs => _innerUIs;
 

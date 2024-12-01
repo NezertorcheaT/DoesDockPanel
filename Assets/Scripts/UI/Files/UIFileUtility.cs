@@ -12,8 +12,8 @@ namespace CustomHelper
             Transform container,
             IEnumerable<FileObject> files,
             LinkUI linkPrefab,
-            FolderUI folderPrefab,
-            Func<FolderUI, Transform, Folder, bool, FolderUI> folderFactory,
+            IFolderUI folderPrefab,
+            Func<IFolderUI, Transform, Folder, bool, IFolderUI> folderFactory,
             Func<LinkUI, Transform, Link, LinkUI> linkFactory,
             bool insideFolder = false
         )
@@ -28,18 +28,18 @@ namespace CustomHelper
             Transform container,
             IEnumerable<FileObject> files,
             LinkUI linkPrefab,
-            FolderUI folderPrefab,
-            Func<FolderUI, Transform, Folder, bool, FolderUI> folderFactory,
+            IFolderUI folderPrefab,
+            Func<IFolderUI, Transform, Folder, bool, IFolderUI> folderFactory,
             Func<LinkUI, Transform, Link, LinkUI> linkFactory,
             bool insideFolder = true
         )
         {
             foreach (var file in files)
             {
-                FileUI i = file switch
+                var i = file switch
                 {
                     Link link => linkFactory(linkPrefab, container, link),
-                    Folder folder => folderFactory(folderPrefab, container, folder, insideFolder),
+                    Folder folder => folderFactory(folderPrefab, container, folder, insideFolder) as FileUI,
                     _ => null
                 };
                 if (i is null) continue;

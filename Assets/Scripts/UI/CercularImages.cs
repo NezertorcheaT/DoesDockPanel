@@ -55,6 +55,7 @@ namespace UI
 
         private void Recalculate()
         {
+            if (transform.childCount == 0) return;
             if (_children is null || _children.Count != RectTransform.childCount)
                 UpdateChildren();
             var angle = 1f / _children.Count * 360f;

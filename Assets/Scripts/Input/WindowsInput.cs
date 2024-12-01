@@ -990,6 +990,7 @@ namespace Input
         private static extern short GetAsyncKeyState(int vKey);
 
         public static bool GetKey(Keys key) => (GetAsyncKeyState((int)key) & 0x8000) != 0;
+        public static bool GetKey(int key) => (GetAsyncKeyState(key) & 0x8000) != 0;
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr GetStdHandle(int nStdHandle);

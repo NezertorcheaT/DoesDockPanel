@@ -47,7 +47,7 @@ namespace Saving.Links
         private Vector2 _offset = Vector2.zero;
 
         private IFileSaver<string> _saver;
-        [JsonIgnore] public FolderUI AssociatedFolder { get; private set; }
+        [JsonIgnore] public IConfigurableFileUI<FolderConfig> AssociatedFile { get; private set; }
 
         [JsonConstructor]
         private FolderConfig(
@@ -61,10 +61,10 @@ namespace Saving.Links
             _offset = offset;
         }
 
-        public FolderConfig(IFileSaver<string> saver, FolderUI folder)
+        public FolderConfig(IFileSaver<string> saver, IConfigurableFileUI<FolderConfig> file)
         {
             _saver = saver;
-            AssociatedFolder = folder;
+            AssociatedFile = file;
         }
 
         string IFileSaver<string>.ISavable.Convert() =>
@@ -79,12 +79,12 @@ namespace Saving.Links
                     throw new ArgumentException(
                         $"Converted string '{converted}' is not FolderConfig and can't be deserialized");
                 deserialized._saver = saver;
-                deserialized.AssociatedFolder = AssociatedFolder;
+                deserialized.AssociatedFile = AssociatedFile;
                 return deserialized;
             }
             catch
             {
-                var config = new FolderConfig(saver, AssociatedFolder);
+                var config = new FolderConfig(saver, AssociatedFile);
                 config._saver.Save(config);
                 return config;
             }

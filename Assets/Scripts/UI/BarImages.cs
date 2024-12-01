@@ -15,7 +15,7 @@ namespace UI
 {
     public class BarImages : MonoBehaviour
     {
-        [Inject] private Func<FolderUI, Transform, Folder, bool, FolderUI> _folderFactory;
+        [Inject] private Func<IFolderUI, Transform, Folder, bool, IFolderUI> _folderFactory;
         [Inject] private Func<LinkUI, Transform, Link, LinkUI> _linkFactory;
         [Inject] private DockLinks _dockLinks;
         [SerializeField] private Transform container;

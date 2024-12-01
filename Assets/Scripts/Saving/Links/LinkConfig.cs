@@ -48,7 +48,7 @@ namespace Saving.Links
         private FilePath _rightClickAction = FilePath.Empty;
 
         private IFileSaver<string> _saver;
-        [JsonIgnore] public LinkUI AssociatedLink { get; private set; }
+        [JsonIgnore] public IConfigurableFileUI<LinkConfig> AssociatedLink { get; private set; }
 
         [JsonIgnore]
         public bool ActionEmpty =>
@@ -68,12 +68,12 @@ namespace Saving.Links
             _rightClickAction = rightClickAction;
         }
 
-        public LinkConfig(IFileSaver<string> saver, LinkUI link)
+        public LinkConfig(IFileSaver<string> saver, IConfigurableFileUI<LinkConfig> link)
         {
             _saver = saver;
             AssociatedLink = link;
             if (ActionEmpty)
-                _leftClickAction = AssociatedLink.CurrentFile.File;
+                _leftClickAction = AssociatedLink.Instance.CurrentFile.File;
         }
 
         string IFileSaver<string>.ISavable.Convert() =>
@@ -90,7 +90,7 @@ namespace Saving.Links
                 deserialized._saver = saver;
                 deserialized.AssociatedLink = AssociatedLink;
                 if (deserialized.ActionEmpty)
-                    deserialized._leftClickAction = AssociatedLink.CurrentFile.File;
+                    deserialized._leftClickAction = AssociatedLink.Instance.CurrentFile.File;
                 return deserialized;
             }
             catch (Exception e)

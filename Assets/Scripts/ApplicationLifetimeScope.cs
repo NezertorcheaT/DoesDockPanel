@@ -1,5 +1,6 @@
 using System.Linq;
 using Files;
+using Input;
 using UI;
 using UnityEngine;
 using VContainer;
@@ -18,6 +19,7 @@ public class ApplicationLifetimeScope : LifetimeScope
         PrimeTweenConfig.warnEndValueEqualsCurrent = false;
         builder.RegisterEntryPoint<ConfigEntry>();
         builder.RegisterEntryPoint<TransparentWindow>();
+        builder.RegisterEntryPoint<WindowsInputActions>();
         builder.RegisterComponent(dockLinks).AsSelf();
         builder.RegisterComponent(barImages).AsSelf();
         var controls = new Controls();
@@ -35,9 +37,11 @@ public class ApplicationLifetimeScope : LifetimeScope
             linkUI.Initialize(file);
             return linkUI;
         }).AsSelf();
-        builder.RegisterFactory<FolderUI, Transform, Folder, bool, FolderUI>((prefab, container, file, inside) =>
+        builder.RegisterFactory<IFolderUI, Transform, Folder, bool, IFolderUI>((prefab, container, file, inside) =>
         {
-            var folderUI = Container.Instantiate(prefab, Vector3.zero, Quaternion.identity, container);
+            var folderUI = Container
+                .Instantiate(prefab.ContainedIn, Vector3.zero, Quaternion.identity, container)
+                .GetComponent<IFolderUI>();
             folderUI.Initialize(file, inside);
             return folderUI;
         }).AsSelf();
