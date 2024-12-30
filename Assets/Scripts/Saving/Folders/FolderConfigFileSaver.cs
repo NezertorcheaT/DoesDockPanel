@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Saving.Links
+namespace Saving.Folders
 {
     public class FolderConfigFileSaver : IFileSaver<string>
     {

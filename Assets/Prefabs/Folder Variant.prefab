@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6476758611339499654, guid: 3651c7a3d5ab60b4399529c49942e30d, type: 3}
       propertyPath: m_Name
-      value: Folder Variant Variant
+      value: Folder Variant
       objectReference: {fileID: 0}
     - target: {fileID: 7840457234489175652, guid: 3651c7a3d5ab60b4399529c49942e30d, type: 3}
       propertyPath: folderPrefab

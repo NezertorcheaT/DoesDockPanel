@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.IO;
 using System.Windows.Media.Imaging;
 using Microsoft.WindowsAPICodePack.Shell;
@@ -21,9 +20,14 @@ public partial class App
 
         var file = e.Args[0];
         var to = e.Args[1];
+
         if (!File.Exists(to))
             File.Create(to).Dispose();
-        var image = GetIcon(file);
+
+        var image = File.Exists(file)
+            ? ShellFile.FromFilePath(file).Thumbnail.LargeBitmapSource
+            : ShellFileSystemFolder.FromFolderPath(file).Thumbnail.LargeBitmapSource;
+
         using (var s = new FileStream(to, FileMode.Open))
         {
             var encoder = new PngBitmapEncoder();
@@ -32,16 +36,5 @@ public partial class App
         }
 
         Shutdown();
-    }
-
-    private static BitmapSource GetIcon(string file) => ShellFile.FromFilePath(file).Thumbnail.LargeBitmapSource;
-
-    public static void OpenWithDefaultProgram(string file)
-    {
-        using var filerOpener = new Process();
-
-        filerOpener.StartInfo.FileName = "explorer";
-        filerOpener.StartInfo.Arguments = file;
-        filerOpener.Start();
     }
 }

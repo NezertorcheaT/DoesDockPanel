@@ -441,7 +441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8224534113673736960, guid: 47d37ba12c926b9478e26fcf48add095, type: 3}
       propertyPath: m_Name
-      value: Folder Variant
+      value: Folder
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8544601783074920237, guid: 47d37ba12c926b9478e26fcf48add095, type: 3}

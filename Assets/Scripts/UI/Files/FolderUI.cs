@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using CustomHelper;
 using Files;
-using Saving.Links;
+using Saving.Folders;
 using Saving.Settings;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -59,7 +59,8 @@ namespace UI.Files
                 Config = Config.Deconvert(saver.Read(ConfigFile), saver) as FolderConfig;
 
             _insideFolder = insideFolder;
-            Image = folderTexture;
+            if (!Config.IsUsingCustomIcon)
+                Image = folderTexture;
             UpdateGUI(CurrentFolder.Links, null);
             OnEnable();
         }

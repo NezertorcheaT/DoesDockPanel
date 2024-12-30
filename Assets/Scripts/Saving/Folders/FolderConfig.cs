@@ -5,7 +5,7 @@ using Saving.Settings;
 using UI.Files;
 using UnityEngine;
 
-namespace Saving.Links
+namespace Saving.Folders
 {
     [Serializable]
     public class FolderConfig : IFileSaver<string>.ISavable
@@ -46,6 +46,18 @@ namespace Saving.Links
 
         private Vector2 _offset = Vector2.zero;
 
+        public bool IsUsingCustomIcon
+        {
+            get => _isUsingCustomIcon;
+            set
+            {
+                _isUsingCustomIcon = value;
+                _saver.Save(this);
+            }
+        }
+
+        private bool _isUsingCustomIcon;
+
         private IFileSaver<string> _saver;
         [JsonIgnore] public IConfigurableFileUI<FolderConfig> AssociatedFile { get; private set; }
 
@@ -53,12 +65,14 @@ namespace Saving.Links
         private FolderConfig(
             Vector2 offset,
             float containerWidth = 500,
-            float containerHeight = 400
+            float containerHeight = 400,
+            bool isUsingCustomIcon = false
         )
         {
             _containerWidth = containerWidth;
             _containerHeight = containerHeight;
             _offset = offset;
+            _isUsingCustomIcon = isUsingCustomIcon;
         }
 
         public FolderConfig(IFileSaver<string> saver, IConfigurableFileUI<FolderConfig> file)
