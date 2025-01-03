@@ -37,17 +37,17 @@ namespace Files
                     .Last()
                 );
 
-            foreach (var (file, texture) in await Task.WhenAll(files.Select(async i => (i, await FileThumbnail.GetThumbnail(i)))))
+            foreach (var file in files)
             {
                 if (Directory.Exists(file))
                 {
-                    var folder = new Folder(texture, file);
+                    var folder = new Folder(DockTextures.Textures[file], file);
                     await folder.UpdateLinks();
                     collection.Add(folder);
                     continue;
                 }
 
-                collection.Add(new Link(texture, file));
+                collection.Add(new Link(DockTextures.Textures[file], file));
             }
         }
 

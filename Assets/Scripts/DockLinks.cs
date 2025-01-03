@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using Files;
 using R3;
 using Saving.Settings;
@@ -22,11 +23,12 @@ public class DockLinks : MonoBehaviour
     {
         if (!Directory.Exists(ConfigEntry.Instance.LinksPath))
             Directory.CreateDirectory(ConfigEntry.Instance.LinksPath);
-        UpdateImages();
+        _ = UpdateImages();
     }
 
-    public async void UpdateImages()
+    public async Task UpdateImages()
     {
+        if (!DockTextures.IsTexturesUpdated) await DockTextures.Update();
         updateStarted.Invoke();
         _updateStarted.OnNext(new Unit());
         await FileObjectUtility.Populate(Links, ConfigEntry.Instance.LinksPath);
