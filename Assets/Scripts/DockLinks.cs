@@ -28,7 +28,7 @@ public class DockLinks : MonoBehaviour
 
     public async Task UpdateImages()
     {
-        if (!DockTextures.IsTexturesUpdated) await DockTextures.Update();
+        await DockTextures.Update();
         updateStarted.Invoke();
         _updateStarted.OnNext(new Unit());
         await FileObjectUtility.Populate(Links, ConfigEntry.Instance.LinksPath);

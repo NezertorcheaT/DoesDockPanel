@@ -32,9 +32,9 @@ namespace UI
                         var linksPath = strings.FirstOrDefault();
                         EnableButtons();
 
-                        if (!string.IsNullOrWhiteSpace(linksPath)) return;
+                        if (string.IsNullOrWhiteSpace(linksPath)) return;
                         ConfigEntry.Instance.LinksPath = linksPath;
-                        _dock.UpdateImages();
+                        _ = _dock.UpdateImages();
                     }
                 );
             });

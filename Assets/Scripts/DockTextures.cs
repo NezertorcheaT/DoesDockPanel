@@ -10,15 +10,10 @@ using UnityEngine;
 public static class DockTextures
 {
     public static IReadOnlyDictionary<FilePath, Texture2D> Textures { get; private set; }
-    public static bool IsTexturesUpdated { get; private set; }
 
-    public static async Task Update()
-    {
-        Textures = await Generate();
-        IsTexturesUpdated = true;
-    }
+    public static async Task Update() => Textures = await Generate();
 
-    public static async Task<IReadOnlyDictionary<FilePath, Texture2D>> Generate()
+    private static async Task<IReadOnlyDictionary<FilePath, Texture2D>> Generate()
     {
         Dictionary<FilePath, Texture2D> textures = new();
         if (!Directory.Exists(ConfigEntry.Instance.LinksPath))
