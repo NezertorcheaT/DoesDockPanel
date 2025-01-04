@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Files;
 using R3;
@@ -23,17 +24,24 @@ public class DockLinks : MonoBehaviour
     {
         if (!Directory.Exists(ConfigEntry.Instance.LinksPath))
             Directory.CreateDirectory(ConfigEntry.Instance.LinksPath);
-        _ = UpdateImages();
+        UpdateImages();
     }
 
-    public async Task UpdateImages()
+    public async void UpdateImages()
     {
-        await DockTextures.Update();
-        updateStarted.Invoke();
-        _updateStarted.OnNext(new Unit());
-        await FileObjectUtility.Populate(Links, ConfigEntry.Instance.LinksPath);
-        updateEnded.Invoke();
-        _updateEnded.OnNext(new Unit());
+        try
+        {
+            await DockTextures.Update();
+            updateStarted.Invoke();
+            _updateStarted.OnNext(new Unit());
+            await FileObjectUtility.Populate(Links, ConfigEntry.Instance.LinksPath);
+            updateEnded.Invoke();
+            _updateEnded.OnNext(new Unit());
+        }
+        catch (Exception e)
+        {
+            Debug.LogException(e);
+        }
     }
 
     private void OnDestroy()

@@ -34,7 +34,7 @@ namespace UI
 
                         if (string.IsNullOrWhiteSpace(linksPath)) return;
                         ConfigEntry.Instance.LinksPath = linksPath;
-                        _ = _dock.UpdateImages();
+                        _dock.UpdateImages();
                     }
                 );
             });
