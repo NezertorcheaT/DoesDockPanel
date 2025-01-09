@@ -1145,6 +1145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 297c042dc80d418a8295e41f6def16b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  imageContainer: {fileID: 2637897916889005758}
   fileUI: {fileID: 8544601783074920237}
 --- !u!114 &8109213371199562801
 MonoBehaviour:
