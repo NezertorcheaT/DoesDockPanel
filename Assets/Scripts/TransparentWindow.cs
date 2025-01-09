@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 using VContainer.Unity;
 
 [UsedImplicitly]
@@ -78,7 +77,7 @@ public class TransparentWindow : ITickable
     private void NotEditorUpdate()
     {
         EventSystem.current.RaycastAll(
-            new PointerEventData(EventSystem.current) { position = Mouse.current.position.ReadValue() }, Rl);
+            new PointerEventData(EventSystem.current) { position = UnityEngine.Input.mousePosition }, Rl);
         SetWindowLong(_currentWindow, GWL_EXSTYLE,
             _initialStyle | WS_EX_NOACTIVATE | (Rl.Count == 0
                 ? WS_EX_LAYERED | WS_EX_TRANSPARENT

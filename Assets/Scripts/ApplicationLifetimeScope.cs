@@ -1,4 +1,3 @@
-using System.Linq;
 using Files;
 using Input;
 using UI;
@@ -22,15 +21,6 @@ public class ApplicationLifetimeScope : LifetimeScope
         builder.RegisterEntryPoint<WindowsInputActions>();
         builder.RegisterComponent(dockLinks).AsSelf();
         builder.RegisterComponent(barImages).AsSelf();
-        var controls = new Controls();
-        var bools = controls.devices?.Select(a =>
-        {
-            Debug.Log(a.canRunInBackground);
-            return a.canRunInBackground;
-        }).ToArray();
-        controls.Enable();
-        builder.RegisterInstance(controls).AsSelf();
-
         builder.RegisterFactory<LinkUI, Transform, Link, LinkUI>((prefab, container, file) =>
         {
             var linkUI = Container.Instantiate(prefab, Vector3.zero, Quaternion.identity, container);

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 
 namespace UI
 {
@@ -20,7 +19,7 @@ namespace UI
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            _offset = transform.anchoredPosition - Mouse.current.position.ReadValue();
+            _offset = transform.anchoredPosition - (Vector2)UnityEngine.Input.mousePosition;
             _dragging = true;
         }
 
@@ -28,13 +27,13 @@ namespace UI
         {
             if (!_dragging) return;
             _dragging = false;
-            transform.anchoredPosition = Mouse.current.position.ReadValue() + _offset;
+            transform.anchoredPosition = (Vector2)UnityEngine.Input.mousePosition + _offset;
         }
 
         private void LateUpdate()
         {
             if (!_dragging) return;
-            transform.anchoredPosition = Mouse.current.position.ReadValue() + _offset;
+            transform.anchoredPosition = (Vector2)UnityEngine.Input.mousePosition + _offset;
         }
     }
 }
