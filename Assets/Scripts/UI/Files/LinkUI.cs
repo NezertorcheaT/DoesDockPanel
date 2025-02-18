@@ -3,11 +3,15 @@ using CustomHelper;
 using Files;
 using R3;
 using Saving.Links;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI.Files
 {
     public class LinkUI : FileUI, IConfigurableFileUI<LinkConfig>
     {
+        [SerializeField] private LayoutElement layoutElement;
+
         public const string ConfigExtension = "conf";
         public FileUI Instance => this;
         public FilePath ConfigFile => $"{CurrentFile.File}.{ConfigExtension}";
@@ -25,6 +29,7 @@ namespace UI.Files
             LeftClick.Subscribe(_ => Helper.OpenWithDefaultProgram(Config.LeftClickAction));
             MiddleClick.Subscribe(_ => Helper.OpenWithDefaultProgram(Config.MiddleClickAction));
             RightClick.Subscribe(_ => Helper.OpenWithDefaultProgram(Config.RightClickAction));
+            layoutElement.layoutPriority = Config.LayoutPriority;
         }
 
         public static bool LinkHasConfig(string file) => File.Exists($"{file}.{ConfigExtension}");

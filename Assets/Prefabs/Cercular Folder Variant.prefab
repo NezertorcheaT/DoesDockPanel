@@ -95,9 +95,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2369504212751045520, guid: beef95e86e71525489c59f66aa00f2c1, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2673696478669535912, guid: beef95e86e71525489c59f66aa00f2c1, type: 3}
       propertyPath: m_Name
       value: Cercular Folder Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 2985093525736490135, guid: beef95e86e71525489c59f66aa00f2c1, type: 3}
+      propertyPath: m_fontSize
+      value: 19.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2985093525736490135, guid: beef95e86e71525489c59f66aa00f2c1, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -8118956234750141045, guid: 637a13783dd3cf84f86ec4dd9cc8c1cd, type: 2}
+    - target: {fileID: 3977294069323724650, guid: beef95e86e71525489c59f66aa00f2c1, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6285426104597377406, guid: beef95e86e71525489c59f66aa00f2c1, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: beef95e86e71525489c59f66aa00f2c1, type: 3}

@@ -10,6 +10,18 @@ namespace Saving.Folders
     [Serializable]
     public class FolderConfig : IFileSaver<string>.ISavable
     {
+        public int LayoutPriority
+        {
+            get => _layoutPriority;
+            set
+            {
+                _layoutPriority = value;
+                _saver.Save(this);
+            }
+        }
+
+        private int _layoutPriority = 0;
+
         public float ContainerHeight
         {
             get => _containerHeight;
@@ -66,13 +78,15 @@ namespace Saving.Folders
             Vector2 offset,
             float containerWidth = 500,
             float containerHeight = 400,
-            bool isUsingCustomIcon = false
+            bool isUsingCustomIcon = false,
+            int layoutPriority = 0
         )
         {
             _containerWidth = containerWidth;
             _containerHeight = containerHeight;
             _offset = offset;
             _isUsingCustomIcon = isUsingCustomIcon;
+            _layoutPriority = layoutPriority;
         }
 
         public FolderConfig(IFileSaver<string> saver, IConfigurableFileUI<FolderConfig> file)

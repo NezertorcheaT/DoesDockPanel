@@ -11,6 +11,18 @@ namespace Saving.Links
     [Serializable]
     public class LinkConfig : IFileSaver<string>.ISavable
     {
+        public int LayoutPriority
+        {
+            get => _layoutPriority;
+            set
+            {
+                _layoutPriority = value;
+                _saver.Save(this);
+            }
+        }
+
+        private int _layoutPriority = 1;
+
         public FilePath LeftClickAction
         {
             get => _leftClickAction;
@@ -60,17 +72,20 @@ namespace Saving.Links
         private LinkConfig(
             FilePath leftClickAction,
             FilePath middleClickAction,
-            FilePath rightClickAction
+            FilePath rightClickAction,
+            int layoutPriority = 1
         )
         {
             _leftClickAction = leftClickAction;
             _middleClickAction = middleClickAction;
             _rightClickAction = rightClickAction;
+            _layoutPriority = layoutPriority;
         }
 
         public LinkConfig(IFileSaver<string> saver, IConfigurableFileUI<LinkConfig> link)
         {
             _saver = saver;
+            _layoutPriority = 1;
             AssociatedLink = link;
             if (ActionEmpty)
                 _leftClickAction = AssociatedLink.Instance.CurrentFile.File;

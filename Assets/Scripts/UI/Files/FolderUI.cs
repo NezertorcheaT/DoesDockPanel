@@ -7,6 +7,7 @@ using Saving.Folders;
 using Saving.Settings;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 using VContainer;
 
 namespace UI.Files
@@ -39,6 +40,7 @@ namespace UI.Files
 
         public FolderConfig Config { get; private set; }
 
+        [SerializeField] private LayoutElement layoutElement;
         [SerializeField] private Texture2D folderTexture;
         [SerializeField] private LinkUI linkPrefab;
         [SerializeField] private FolderUI folderPrefab;
@@ -46,7 +48,7 @@ namespace UI.Files
         [SerializeField] private RectTransform containerL;
         [SerializeField] private RectTransform containerU;
         [SerializeField] private RectTransform containerD;
-        private List<FileUI> _innerUIs = new();
+        private readonly List<FileUI> _innerUIs = new();
         private bool _insideFolder;
 
         public void Initialize(Folder folder, bool insideFolder = false)
@@ -61,6 +63,7 @@ namespace UI.Files
             _insideFolder = insideFolder;
             if (!Config.IsUsingCustomIcon)
                 Image = folderTexture;
+            layoutElement.layoutPriority = Config.LayoutPriority;
             UpdateGUI(CurrentFolder.Links, null);
             OnEnable();
         }
