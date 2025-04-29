@@ -8,6 +8,7 @@ namespace Saving.Settings
     public class ConfigEntry
     {
         public static Config Instance { get; private set; }
+        public Config Current;
 
         [Inject]
         private ConfigEntry()
@@ -28,6 +29,7 @@ namespace Saving.Settings
 
             config = config.Deconvert(configText, configSaver) as Config;
             Instance = config;
+            Current = config;
         }
     }
 }

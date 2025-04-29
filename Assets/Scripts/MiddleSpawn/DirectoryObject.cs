@@ -24,9 +24,8 @@ namespace MiddleSpawn
             updateContainer(this);
         }
 
-        public IEnumerator<IOpenableObject> GetEnumerator()
-        {
-            return Directory
+        public IEnumerable<(OpeningIndex, IOpenableObject)> EvaluateInners(IOpenablesContainer container) =>
+            Directory
                 .EnumerateFileSystemEntries(CurrentPath, "**", new EnumerationOptions { IgnoreInaccessible = true })
                 .Select(i => i
                     .Replace('/', Path.AltDirectorySeparatorChar)
@@ -37,18 +36,25 @@ namespace MiddleSpawn
                     .Split(Path.AltDirectorySeparatorChar)
                     .Last()
                 )
-                .Select(i => Directory.Exists(i)
-                    ? new DirectoryObject(i, this) as IOpenableObject
-                    : new FileObject(i))
-                .GetEnumerator();
-        }
+                .Select((i, ind) => Directory.Exists(i)
+                    ? (new OpeningIndex(ind), new DirectoryObject(i, container) as IOpenableObject)
+                    : (new OpeningIndex(ind), new FileObject(i)));
+
+        public IEnumerator<(OpeningIndex, IOpenableObject)> GetEnumerator() => EvaluateInners(this).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-
-        public void OpenAt(OpeningIndex index)
+        public void UseAt(OpeningIndex index, Action<IOpenablesContainer> updateContainer)
         {
-            throw new NotImplementedException();
+            if (index.Back)
+            {
+                updateContainer(Parent);
+                return;
+            }
+
+            var c = this.ToArray();
+            if (c.Length - 1 < index.Index) return;
+            c[index.Index].Item2.Open(updateContainer);
         }
     }
 }

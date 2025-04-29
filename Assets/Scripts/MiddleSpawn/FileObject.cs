@@ -15,7 +15,7 @@ namespace MiddleSpawn
 
         public void Open(Action<IOpenablesContainer> updateContainer)
         {
-            Debug.Log("opened folder");
+            Debug.Log("opened file");
             Helper.OpenWithDefaultProgram(CurrentPath);
         }
     }

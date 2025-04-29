@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MiddleSpawn
 {
-    public interface IOpenablesContainer : IEnumerable<IOpenableObject>
+    public interface IOpenablesContainer : IEnumerable<(OpeningIndex ind, IOpenableObject openable)>
     {
         public IOpenablesContainer Parent { get; }
-        void OpenAt(OpeningIndex index);
+        void UseAt(OpeningIndex index, Action<IOpenablesContainer> updateContainer);
     }
 }
