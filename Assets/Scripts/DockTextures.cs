@@ -2,18 +2,15 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Files;
+using Cysharp.Threading.Tasks;
 using Saving.Settings;
-using UI.Files;
 using UnityEngine;
 
 public static class DockTextures
 {
     public static IReadOnlyDictionary<FilePath, Texture2D> Textures { get; private set; }
 
-    public static async Task Update() => Textures = await Generate();
-
-    private static async Task<IReadOnlyDictionary<FilePath, Texture2D>> Generate()
+    public static async UniTask Update()
     {
         Dictionary<FilePath, Texture2D> textures = new();
         if (!Directory.Exists(ConfigEntry.Instance.LinksPath))
@@ -22,15 +19,14 @@ public static class DockTextures
         var files = Directory
             .EnumerateFileSystemEntries(ConfigEntry.Instance.LinksPath, "**",
                 new EnumerationOptions { RecurseSubdirectories = true })
-            .Where(i => !LinkUI.IsPathToConfig(i) && !FileObjectUtility.IsExcluded(i))
             .Select(i => i
                 .Replace('/', Path.AltDirectorySeparatorChar)
                 .Replace('\\', Path.AltDirectorySeparatorChar)
             );
 
-        foreach (var (file, texture) in await Task.WhenAll(files.Select(async i =>
+        foreach (var (file, texture) in await Task.WhenAll(Enumerable.Select(files, async i =>
                      (i, await FileThumbnail.GetThumbnail(i)))))
             textures.Add(file, texture);
-        return textures;
+        Textures = textures;
     }
 }

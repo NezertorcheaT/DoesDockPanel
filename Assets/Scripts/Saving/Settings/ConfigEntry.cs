@@ -1,8 +1,10 @@
 ﻿using System.IO;
+using JetBrains.Annotations;
 using VContainer.Unity;
 
 namespace Saving.Settings
 {
+    [UsedImplicitly]
     public class ConfigEntry : IStartable
     {
         public static Config Instance;

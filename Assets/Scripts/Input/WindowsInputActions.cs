@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using VContainer.Unity;
 
 namespace Input
 {
+    [UsedImplicitly]
     public class WindowsInputActions : ITickable
     {
-        private class Eventer
+        public class Eventer : IEquatable<Eventer>
         {
+            public bool Equals(Eventer other) => Key == other.Key && Equals(Action, other.Action);
+            public override bool Equals(object obj) => obj is Eventer other && Equals(other);
+            public override int GetHashCode() => HashCode.Combine(Key, Action);
+
             public int Key { get; }
             public Action Action { get; }
-            public bool Pressed { get; set; } = false;
+            public bool Pressed { get; set; }
 
             public Eventer(int key, Action action)
             {
@@ -19,11 +25,13 @@ namespace Input
             }
         }
 
-        private List<Eventer> _events;
+        public void Register(Eventer e) => _events.Add(e);
+        public void Unregister(Eventer e) => _events.Add(e);
+
+        private readonly List<Eventer> _events = new();
 
         public void Tick()
         {
-            _events ??= new List<Eventer>();
             foreach (var eventer in _events)
             {
                 var key = WindowsInput.GetKey(eventer.Key);
