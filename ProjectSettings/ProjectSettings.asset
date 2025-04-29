@@ -634,7 +634,7 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Standalone: VCONTAINER_UNITASK_INTEGRATION
+    Standalone: VCONTAINER_UNITASK_INTEGRATION;PLACEHOLDER_TEXTURE
   additionalCompilerArguments:
     Standalone: []
   platformArchitecture: {}

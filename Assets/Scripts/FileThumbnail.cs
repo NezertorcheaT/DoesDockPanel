@@ -11,6 +11,7 @@ using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 #endif
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 public static class FileThumbnail
 {
@@ -56,7 +57,8 @@ public static class FileThumbnail
 
     public static async Task<Texture2D> GetThumbnail(string filePath)
     {
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+#if (UNITY_STANDALONE_WIN || UNITY_EDITOR)
+#if !PLACEHOLDER_TEXTURE
         var cacheThumbnailFile = Path
             .ChangeExtension(
                 Path.Combine(
@@ -89,9 +91,13 @@ public static class FileThumbnail
             if (File.Exists(cacheThumbnailFile))
                 File.Delete(cacheThumbnailFile);
         }
+
+#else
+        return new Texture2D(52, 52);
+#endif
 #else
         Debug.LogError("This functionality is only supported on Windows.");
-        return null;
+        return new Texture2D(52, 52);
 #endif
     }
 }

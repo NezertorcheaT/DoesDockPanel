@@ -30,14 +30,12 @@ namespace UI
                 .Where(_ => !_hovered && !_opened)
                 .Do(_ => _hovered = true)
                 .Subscribe(_ => Tween.Scale(openButton, 1, 0.2f, Ease.OutCubic))
-                .AddTo(ref disposer)
-                ;
+                .AddTo(ref disposer);
             _onExited
                 .Where(_ => _hovered && !_opened)
                 .Do(_ => _hovered = false)
                 .Subscribe(_ => Tween.Scale(openButton, 0, 0.2f, Ease.OutCubic))
-                .AddTo(ref disposer)
-                ;
+                .AddTo(ref disposer);
 
             closeButton.onClick.AsObservable().Subscribe(_ => Close()).AddTo(ref disposer);
 
@@ -62,7 +60,11 @@ namespace UI
         public void Close()
         {
             if (_opened)
+            {
+                ConfigEntry.Instance.SettingsPosition = container.anchoredPosition;
                 CloseAnim();
+            }
+
             _opened = false;
             _hovered = false;
         }
@@ -75,7 +77,6 @@ namespace UI
 
         private void CloseAnim()
         {
-            ConfigEntry.Instance.SettingsPosition = container.anchoredPosition;
             Tween.UIAnchoredPosition(container,
                 new TweenSettings<Vector2>(new Vector2(1300, 200), 0.4f, Ease.OutCubic));
         }

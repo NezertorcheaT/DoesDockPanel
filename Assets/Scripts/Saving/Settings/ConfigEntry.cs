@@ -1,15 +1,16 @@
 ﻿using System.IO;
 using JetBrains.Annotations;
-using VContainer.Unity;
+using VContainer;
 
 namespace Saving.Settings
 {
     [UsedImplicitly]
-    public class ConfigEntry : IStartable
+    public class ConfigEntry
     {
-        public static Config Instance;
+        public static Config Instance { get; private set; }
 
-        void IStartable.Start()
+        [Inject]
+        private ConfigEntry()
         {
             var configSaver = new ConfigFileSaver();
             var config = new Config(configSaver);

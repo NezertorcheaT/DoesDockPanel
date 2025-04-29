@@ -171,7 +171,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects:
-  - {fileID: 372096441}
+  - {fileID: 764114576}
 --- !u!1 &372096441
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,7 +470,6 @@ GameObject:
   - component: {fileID: 764114579}
   - component: {fileID: 764114578}
   - component: {fileID: 764114577}
-  - component: {fileID: 764114582}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -561,28 +560,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &764114582
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 764114576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 694b85f4e3174a80ac924b15741dd59b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  updateStarted:
-    m_PersistentCalls:
-      m_Calls:
-      - {m_Target: {fileID: 0}, m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI, m_MethodName: set_interactable, m_Mode: 6, m_Arguments: {m_ObjectArgument: {fileID: 0}, m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, m_IntArgument: 0, m_FloatArgument: 0, m_StringArgument: , m_BoolArgument: 0}, m_CallState: 2}
-    m_CallsDirty: 1
-  updateEnded:
-    m_PersistentCalls:
-      m_Calls:
-      - {m_Target: {fileID: 0}, m_TargetAssemblyTypeName: UnityEngine.UI.Selectable, UnityEngine.UI, m_MethodName: set_interactable, m_Mode: 6, m_Arguments: {m_ObjectArgument: {fileID: 0}, m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, m_IntArgument: 0, m_FloatArgument: 0, m_StringArgument: , m_BoolArgument: 1}, m_CallState: 2}
-    m_CallsDirty: 1
 --- !u!1 &825717920
 GameObject:
   m_ObjectHideFlags: 0
