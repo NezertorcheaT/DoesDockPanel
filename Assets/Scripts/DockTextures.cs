@@ -8,10 +8,14 @@ using UnityEngine;
 
 public static class DockTextures
 {
-    public static IReadOnlyDictionary<FilePath, Texture2D> Textures { get; private set; }
+    private static IReadOnlyDictionary<FilePath, Texture2D> _textures;
+    private static bool _texturesUpdating;
+
+    public static Texture2D Get(FilePath path) => _texturesUpdating ? FileThumbnail.NullTexture : _textures[path];
 
     public static async UniTask Update()
     {
+        _texturesUpdating = true;
         Dictionary<FilePath, Texture2D> textures = new();
         if (!Directory.Exists(ConfigEntry.Instance.LinksPath))
             Directory.CreateDirectory(ConfigEntry.Instance.LinksPath);
@@ -27,6 +31,7 @@ public static class DockTextures
         foreach (var (file, texture) in await Task.WhenAll(Enumerable.Select(files, async i =>
                      (i, await FileThumbnail.GetThumbnail(i)))))
             textures.Add(file, texture);
-        Textures = textures;
+        _textures = textures;
+        _texturesUpdating = false;
     }
 }

@@ -2,6 +2,8 @@
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Input;
+using MiddleSpawn;
 using Saving.Converters;
 using UnityEngine;
 
@@ -25,66 +27,21 @@ namespace Saving.Settings
 
         private FilePath _linksPath = $"{GlobalFileSaver.Path}{Path.AltDirectorySeparatorChar}Links";
 
-        public Vector3 SettingsPosition
+        public Keymap OpenKeymap
         {
-            get => _settingsPosition;
+            get => _openKeymap;
             set
             {
-                _settingsPosition = value;
+                _openKeymap = value;
                 _saver.Save(this);
             }
         }
 
-        private Vector3 _settingsPosition = new(722, 86);
-
-        public TextAnchor TextAnchor
-        {
-            get => _textAnchor;
-            set
-            {
-                _textAnchor = value;
-                _saver.Save(this);
-            }
-        }
-
-        private TextAnchor _textAnchor = TextAnchor.UpperCenter;
-
-        public FolderSide FolderItemsPosition
-        {
-            get => _folderItemsPosition;
-            set
-            {
-                _folderItemsPosition = value;
-                _saver.Save(this);
-            }
-        }
-
-        private FolderSide _folderItemsPosition = FolderSide.Down;
-
-        public bool InnerFolderSide
-        {
-            get => _innerFolderSide;
-            set
-            {
-                _innerFolderSide = value;
-                _saver.Save(this);
-            }
-        }
-
-        private bool _innerFolderSide = true;
-
-
-        public bool IsVertical
-        {
-            get => _isVertical;
-            set
-            {
-                _isVertical = value;
-                _saver.Save(this);
-            }
-        }
-
-        private bool _isVertical = true;
+        private Keymap _openKeymap = new(
+            $"{WindowsInput.Keys.Control.ToString()}," +
+            $"{WindowsInput.Keys.Alt.ToString()}," +
+            $"{WindowsInput.Keys.Space.ToString()}"
+        );
 
         public static JsonSerializerOptions SerializerOptions => new()
         {
@@ -93,6 +50,7 @@ namespace Saving.Settings
                 new Vector2Converter(),
                 new Vector3Converter(),
                 new FilePathConverter(),
+                new KeymapConverter(),
             },
             WriteIndented = true,
         };
@@ -102,19 +60,11 @@ namespace Saving.Settings
         [JsonConstructor]
         private Config(
             FilePath linksPath,
-            Vector3 settingsPosition,
-            TextAnchor textAnchor = TextAnchor.UpperCenter,
-            bool isVertical = true,
-            FolderSide folderItemsPosition = FolderSide.Down,
-            bool innerFolderSide = true
+            Keymap openKeymap
         )
         {
             _linksPath = linksPath;
-            _textAnchor = textAnchor;
-            _isVertical = isVertical;
-            _settingsPosition = settingsPosition != Vector3.zero ? settingsPosition : new Vector3(722, 86);
-            _folderItemsPosition = folderItemsPosition;
-            _innerFolderSide = innerFolderSide;
+            _openKeymap = openKeymap;
         }
 
         public Config(ConfigFileSaver saver)
@@ -140,21 +90,16 @@ namespace Saving.Settings
             {
                 var config = new Config(
                     $"{GlobalFileSaver.Path}{Path.AltDirectorySeparatorChar}Links",
-                    new Vector3(722, 86)
+                    new Keymap(
+                        $"{WindowsInput.Keys.Control.ToString()}," +
+                        $"{WindowsInput.Keys.Alt.ToString()}," +
+                        $"{WindowsInput.Keys.Space.ToString()}"
+                    )
                 );
                 config._saver = saver;
                 config._saver.Save(config);
                 return config;
             }
         }
-    }
-
-    [Flags]
-    public enum FolderSide
-    {
-        Right,
-        Left,
-        Down,
-        Up
     }
 }

@@ -20,7 +20,7 @@ namespace MiddleSpawn
 
         public void Open(Action<IOpenablesContainer> updateContainer)
         {
-            Debug.Log("opened folder");
+            Debug.Log($"opened folder {CurrentPath}");
             updateContainer(this);
         }
 

@@ -3,7 +3,6 @@ using R3;
 using UnityEngine;
 using UnityEngine.UI;
 using PrimeTween;
-using Saving.Settings;
 using UnityEngine.EventSystems;
 
 namespace UI
@@ -45,46 +44,27 @@ namespace UI
 
         private void Start()
         {
-            CloseAnim();
+            container.gameObject.SetActive(false);
         }
 
         public void Open()
         {
-            if (!_opened)
-                OpenAnim();
-            Tween.Scale(openButton, 0, 0.2f, Ease.OutCubic);
+            if (!_opened) container.gameObject.SetActive(true);
+
             _opened = true;
             _hovered = false;
         }
 
         public void Close()
         {
-            if (_opened)
-            {
-                ConfigEntry.Instance.SettingsPosition = container.anchoredPosition;
-                CloseAnim();
-            }
+            if (_opened) container.gameObject.SetActive(false);
 
             _opened = false;
             _hovered = false;
         }
 
-        private void OpenAnim()
-        {
-            Tween.UIAnchoredPosition(container,
-                new TweenSettings<Vector2>(ConfigEntry.Instance.SettingsPosition, 0.4f, Ease.OutCubic));
-        }
-
-        private void CloseAnim()
-        {
-            Tween.UIAnchoredPosition(container,
-                new TweenSettings<Vector2>(new Vector2(1300, 200), 0.4f, Ease.OutCubic));
-        }
-
         private void OnDestroy()
         {
-            if (_opened)
-                ConfigEntry.Instance.SettingsPosition = container.anchoredPosition;
             _disposableEvents.Dispose();
         }
 

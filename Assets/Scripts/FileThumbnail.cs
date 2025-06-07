@@ -11,10 +11,11 @@ using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 #endif
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 public static class FileThumbnail
 {
+    public static readonly Texture2D NullTexture = new(52, 52);
+
     public static readonly string ThumbnailSolution =
         Path.Combine(Application.dataPath.Replace("Assets", "Thumbnails"), "Thumbnails.csproj")
             .Replace('/', Path.AltDirectorySeparatorChar)
@@ -80,7 +81,7 @@ public static class FileThumbnail
                 await UniTask.WaitWhile(() => !process.HasExited);
             }
 
-            if ((await File.ReadAllBytesAsync(cacheThumbnailFile)).Length == 0) return null;
+            if ((await File.ReadAllBytesAsync(cacheThumbnailFile)).Length == 0) return NullTexture;
             var bm = new Bitmap(cacheThumbnailFile);
             var thumbnail = bm.AsTexture2D();
             bm.Dispose();
@@ -93,11 +94,11 @@ public static class FileThumbnail
         }
 
 #else
-        return new Texture2D(52, 52);
+        return NullTexture;
 #endif
 #else
         Debug.LogError("This functionality is only supported on Windows.");
-        return new Texture2D(52, 52);
+        return NullTexture;
 #endif
     }
 }
