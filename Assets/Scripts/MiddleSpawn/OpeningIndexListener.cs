@@ -5,18 +5,22 @@ using VContainer.Unity;
 
 namespace MiddleSpawn
 {
-    public class KeyListener : ITickable
+    public class OpeningIndexListener : ITickable
     {
+        private const float ClickDelay = 0.2f;
+        private static readonly TimeSpan DelayTimeSpan = TimeSpan.FromSeconds(ClickDelay);
+
         public event Action<OpeningIndex> OnSelected;
-        public const float ClickDelay = 0.2f;
         private bool _delayed;
 
         [Inject]
-        private KeyListener()
+        private OpeningIndexListener()
         {
         }
 
-        public async void Tick()
+        public void Tick() => _ = Tick(0);
+
+        private async UniTaskVoid Tick(float veryNeeded)
         {
             if (_delayed) return;
             var i = OpeningIndex.GetFromWindows();
@@ -24,7 +28,7 @@ namespace MiddleSpawn
             {
                 OnSelected?.Invoke(i.Value);
                 _delayed = true;
-                await UniTask.Delay(TimeSpan.FromSeconds(ClickDelay));
+                await UniTask.Delay(DelayTimeSpan);
                 _delayed = false;
             }
         }

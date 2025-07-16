@@ -39,7 +39,7 @@ namespace Input
             foreach (var key in _keyset)
             {
                 sb.Append(key.ToString());
-                if (i == _keyset.Count - 1)
+                if (i != _keyset.Count - 1)
                     sb.Append(',');
                 i++;
             }

@@ -8,7 +8,7 @@ namespace UI
     public class RepresentationsContainer : MonoBehaviour
     {
         [Inject] private MainContainer _mainContainer;
-        [Inject] private KeyListener _keyListener;
+        [Inject] private OpeningIndexListener _openingIndexListener;
         [SerializeField] private FileRepresentation representationPrefab;
         [SerializeField] private RectTransform container;
         [SerializeField] private Texture2D emptyFolder;
@@ -20,7 +20,7 @@ namespace UI
             if (_initialized) return;
             _initialized = true;
             UpdateContainer(_mainContainer);
-            _keyListener.OnSelected += OnIndexSelected;
+            _openingIndexListener.OnSelected += OnIndexSelected;
         }
 
         private void OnIndexSelected(OpeningIndex index)
@@ -58,7 +58,7 @@ namespace UI
 
         private void OnDestroy()
         {
-            _keyListener.OnSelected -= OnIndexSelected;
+            _openingIndexListener.OnSelected -= OnIndexSelected;
         }
     }
 }

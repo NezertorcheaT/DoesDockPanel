@@ -18,7 +18,7 @@ public class ApplicationLifetimeScope : LifetimeScope
         builder.RegisterEntryPoint<ConfigEntry>().AsSelf();
         builder.RegisterEntryPoint<TransparentWindow>().AsSelf();
         builder.RegisterEntryPoint<WindowsInputActions>().AsSelf();
-        builder.RegisterEntryPoint<KeyListener>().AsSelf();
+        builder.RegisterEntryPoint<OpeningIndexListener>().AsSelf();
         builder.RegisterEntryPoint<MainContainer>().AsSelf();
         builder.RegisterBuildCallback(async (IObjectResolver resolver, ConfigEntry _, MainContainer _) =>
         {
