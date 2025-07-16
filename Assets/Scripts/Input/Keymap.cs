@@ -8,11 +8,16 @@ namespace Input
 {
     public class Keymap : IEnumerable<WindowsInput.Keys>
     {
-        private ICollection<WindowsInput.Keys> _keyset;
+        private readonly ICollection<WindowsInput.Keys> _keyset;
+
+        public Keymap(params WindowsInput.Keys[] keyset) :
+            this(keyset as IEnumerable<WindowsInput.Keys>)
+        {
+        }
 
         public Keymap(IEnumerable<WindowsInput.Keys> keyset)
         {
-            _keyset = keyset.ToList();
+            _keyset = keyset.ToArray();
         }
 
         public Keymap(string str)

@@ -38,9 +38,9 @@ namespace Saving.Settings
         }
 
         private Keymap _openKeymap = new(
-            $"{WindowsInput.Keys.Control.ToString()}," +
-            $"{WindowsInput.Keys.Alt.ToString()}," +
-            $"{WindowsInput.Keys.Space.ToString()}"
+            WindowsInput.Keys.Control,
+            WindowsInput.Keys.Alt,
+            WindowsInput.Keys.Space
         );
 
         public static JsonSerializerOptions SerializerOptions => new()
@@ -91,9 +91,9 @@ namespace Saving.Settings
                 var config = new Config(
                     $"{GlobalFileSaver.Path}{Path.AltDirectorySeparatorChar}Links",
                     new Keymap(
-                        $"{WindowsInput.Keys.Control.ToString()}," +
-                        $"{WindowsInput.Keys.Alt.ToString()}," +
-                        $"{WindowsInput.Keys.Space.ToString()}"
+                        WindowsInput.Keys.Control,
+                        WindowsInput.Keys.Alt,
+                        WindowsInput.Keys.Space
                     )
                 );
                 config._saver = saver;

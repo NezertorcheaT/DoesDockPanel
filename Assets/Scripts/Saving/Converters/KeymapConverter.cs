@@ -10,19 +10,10 @@ namespace Saving.Converters
     {
         public override Keymap Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            List<WindowsInput.Keys> keyset = new();
-
             reader.Read();
-            var tokenType = reader.TokenType;
-            if (tokenType != JsonTokenType.String) return new Keymap(keyset);
-            var a = reader.GetString();
-            foreach (var c in a.Split(','))
-            {
-                if (Enum.TryParse(c, out WindowsInput.Keys key))
-                    keyset.Add(key);
-            }
-
-            return new Keymap(keyset);
+            return reader.TokenType != JsonTokenType.String
+                ? new Keymap()
+                : new Keymap(reader.GetString());
         }
 
         public override void Write(Utf8JsonWriter writer, Keymap value, JsonSerializerOptions options)
